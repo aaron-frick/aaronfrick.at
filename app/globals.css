@@ -1,0 +1,181 @@
+@import "tailwindcss";
+
+/*
+ * Frick. Design Tokens
+ * Quelle: Frick Brand Guidelines, Version 1, November 2026.
+ * Nur diese Werte verwenden. Tailwind-Standardfarben, Radien und Schatten sind
+ * deaktiviert (keine runden Karten, keine Schatten, keine Verläufe).
+ */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Markenfarben (Guidelines S. 06) */
+  --brand-navy: #1c2a47; /* Marke · Text */
+  --brand-stahl: #4e6a99; /* Akzent auf Hell */
+  --brand-stahl-hell: #93a9ce; /* Akzent auf Navy */
+  --brand-papier: #f2eee5; /* Ruhefläche */
+  --brand-weiss: #ffffff; /* Standardgrund */
+  --brand-grau: #5e6678; /* Nebentext */
+
+  /* Semantische Rollen, hell */
+  --bg: var(--brand-weiss);
+  --surface: var(--brand-papier);
+  --fg: var(--brand-navy);
+  --muted: var(--brand-grau);
+  --accent: var(--brand-stahl);
+  --line: color-mix(in srgb, var(--brand-navy) 16%, transparent);
+  --line-strong: var(--brand-navy);
+  --on-accent: var(--brand-weiss);
+
+  color-scheme: light;
+}
+
+.dark {
+  /* Semantische Rollen, dunkel: Navy trägt, Stahl hell zeigt */
+  --bg: var(--brand-navy);
+  --surface: var(--brand-navy);
+  --fg: var(--brand-weiss);
+  --muted: color-mix(in srgb, var(--brand-weiss) 72%, var(--brand-navy));
+  --accent: var(--brand-stahl-hell);
+  --line: color-mix(in srgb, var(--brand-weiss) 18%, transparent);
+  --line-strong: var(--brand-weiss);
+  --on-accent: var(--brand-navy);
+
+  color-scheme: dark;
+}
+
+@theme {
+  /* Alles außerhalb des Design Systems abschalten */
+  --color-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --text-shadow-*: initial;
+
+  /* Typo-Skala (Inter 400–800) */
+  --text-display: clamp(2.75rem, 7.2vw + 0.5rem, 8rem);
+  --text-display--line-height: 0.98;
+  --text-display--letter-spacing: -0.04em;
+  --text-wordmark: clamp(5rem, 22vw, 20rem);
+  --text-wordmark--line-height: 0.8;
+  --text-wordmark--letter-spacing: -0.05em;
+
+  --tracking-label: 0.16em;
+
+  /* Rand: 20 mm / 64 px laut Layout-System, mobil reduziert */
+  --spacing-gutter: clamp(1.25rem, 5vw, 4rem);
+  --container-page: 90rem;
+  --container-prose: 42rem;
+
+  /* Bewegung */
+  --ease-calm: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-rise: rise 0.9s var(--ease-calm) both;
+  --animate-scroll-hint: scroll-hint 2.4s var(--ease-calm) infinite;
+  --animate-pulse-dot: pulse-dot 2.4s ease-in-out infinite;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes scroll-hint {
+    0% {
+      transform: scaleY(0);
+      transform-origin: top;
+    }
+    45% {
+      transform: scaleY(1);
+      transform-origin: top;
+    }
+    55% {
+      transform: scaleY(1);
+      transform-origin: bottom;
+    }
+    100% {
+      transform: scaleY(0);
+      transform-origin: bottom;
+    }
+  }
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-on-accent: var(--on-accent);
+
+  --color-navy: var(--brand-navy);
+  --color-stahl: var(--brand-stahl);
+  --color-stahl-hell: var(--brand-stahl-hell);
+  --color-papier: var(--brand-papier);
+  --color-weiss: var(--brand-weiss);
+  --color-grau: var(--brand-grau);
+
+  --font-sans: var(--font-inter), Arial, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    @apply bg-bg font-sans text-fg antialiased;
+    transition: background-color 0.3s var(--ease-calm);
+  }
+
+  ::selection {
+    @apply bg-accent text-on-accent;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  [id] {
+    scroll-margin-top: 6rem;
+  }
+}
+
+@utility label {
+  @apply text-xs font-semibold tracking-label uppercase;
+}
+
+@utility hairline {
+  @apply border-t border-line;
+}
