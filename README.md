@@ -23,7 +23,6 @@ pnpm dev                     # http://localhost:3000
 | `pnpm typecheck` | TypeScript prüfen                                  |
 | `pnpm format`    | Prettier (inkl. Tailwind-Klassen-Sortierung)       |
 | `pnpm icons`     | Favicons und App-Icons aus den Brand-Dateien bauen |
-| `pnpm particles` | Punktwolke des Löwen (Startscreen) neu erzeugen    |
 
 ## Umgebungsvariablen
 

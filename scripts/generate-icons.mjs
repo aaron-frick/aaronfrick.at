@@ -161,6 +161,11 @@ async function main() {
     .resize({ height: 96 })
     .png({ compressionLevel: 9 })
     .toFile(p("public/brand/loewe-maske.png"));
+  // … und in Startscreen-Größe für den Lichtkegel über dem großen Löwen
+  await sharp(p("public/brand/loewe-navy.png"))
+    .resize({ height: 720 })
+    .png({ compressionLevel: 9, palette: true })
+    .toFile(p("public/brand/loewe-maske-gross.png"));
 
   console.log("Icons erzeugt.");
 }

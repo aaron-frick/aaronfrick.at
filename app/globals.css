@@ -189,21 +189,45 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* Cover: Löwe als Punktwolke (components/LionParticles.tsx)           */
+/* Cover: gestochener Löwe (components/CoverLion.tsx)                  */
 /* ------------------------------------------------------------------ */
 
-/* Gestochener Löwe als schwacher Schatten – sichtbar, bis die Punkte da
-   sind (und Fallback ohne JavaScript). */
-.cover-ghost {
-  opacity: 0.1;
-  transition: opacity 1.4s var(--ease-calm);
+.cover-inner {
+  /* --p: Scroll-Fortschritt 0–1 (components/Motion.tsx) */
+  transform: translate3d(0, calc(var(--p, 0) * -10svh), 0);
+  opacity: calc(1 - var(--p, 0) * 1.8);
 }
-[data-particles] .cover-ghost {
+@media (prefers-reduced-motion: reduce) {
+  .cover-inner {
+    transform: none;
+  }
+}
+
+/* Kleiner Lichtkegel am Zeiger, nur auf den Linien des Löwen (Maske) */
+.cover-lion {
+  --glow: var(--brand-stahl-hell);
+}
+.dark .cover-lion {
+  --glow: var(--brand-weiss);
+}
+.cover-lion-glow {
+  pointer-events: none;
+  background: radial-gradient(
+    circle 80px at var(--mx, -999px) var(--my, -999px),
+    var(--glow),
+    transparent 75%
+  );
+  -webkit-mask: url("/brand/loewe-maske-gross.png") center / contain no-repeat;
+  mask: url("/brand/loewe-maske-gross.png") center / contain no-repeat;
   opacity: 0;
+  transition: opacity 0.4s ease;
 }
-@media (scripting: none) {
-  .cover-ghost {
-    opacity: 1;
+.cover-lion:hover .cover-lion-glow {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cover-lion-glow {
+    display: none;
   }
 }
 
@@ -221,9 +245,6 @@
   margin-top: 3rem;
   text-align: center;
 }
-.pin-counter:empty {
-  display: none;
-}
 .pin-section[data-pin] .pin-stage {
   position: sticky;
   top: 0;
@@ -232,13 +253,7 @@
   display: flex;
   flex-direction: column;
 }
-/* Kopfzeile oben, Projekte exakt in der Bildschirmmitte (nicht im Restraum) */
-.pin-section[data-pin] .pin-head {
-  position: absolute;
-  top: 6rem;
-  inset-inline: var(--spacing-gutter);
-  z-index: 1;
-}
+/* Projekte exakt in der Bildschirmmitte */
 .pin-section[data-pin] .pin-list {
   position: absolute;
   inset: 0;

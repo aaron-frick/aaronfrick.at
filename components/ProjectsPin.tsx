@@ -12,7 +12,6 @@ import type { Project } from "@/lib/projects";
 export function ProjectsPin({ projects }: { projects: Project[] }) {
   const sectionRef = useRef<HTMLElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
-  const counterRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -32,7 +31,6 @@ export function ProjectsPin({ projects }: { projects: Project[] }) {
       const range = section.offsetHeight - window.innerHeight;
       const progress = Math.min(1, Math.max(0, -rect.top / range));
       const pos = progress * n; // 0 … n
-      let active = 0;
       items.forEach((el, i) => {
         if (!el) return;
         const t = pos - (i + 0.5); // <0: kommt, 0: Mitte, >0: geht
@@ -46,11 +44,7 @@ export function ProjectsPin({ projects }: { projects: Project[] }) {
         el.style.filter = `blur(${(f * 14).toFixed(2)}px)`;
         el.style.transform = `translate3d(0, ${(-Math.sign(t) * f * f * 18).toFixed(2)}vh, 0)`;
         el.style.visibility = opacity < 0.01 ? "hidden" : "visible";
-        if (d < 0.5) active = i;
       });
-      if (counterRef.current) {
-        counterRef.current.textContent = `${String(active + 1).padStart(2, "0")} / ${String(n).padStart(2, "0")}`;
-      }
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -76,16 +70,9 @@ export function ProjectsPin({ projects }: { projects: Project[] }) {
       className="pin-section relative"
     >
       <div className="pin-stage mx-auto max-w-page px-gutter">
-        <div className="pin-head flex items-baseline justify-between">
-          <h2 id="projekte-label" className="label text-accent">
-            Projekte · Auswahl
-          </h2>
-          <span
-            ref={counterRef}
-            aria-hidden="true"
-            className="pin-counter label text-muted tabular-nums"
-          />
-        </div>
+        <h2 id="projekte-label" className="sr-only">
+          Projekte
+        </h2>
         <ol className="pin-list">
           {projects.map((p, i) => (
             <li
@@ -95,8 +82,7 @@ export function ProjectsPin({ projects }: { projects: Project[] }) {
               }}
               className="pin-item"
             >
-              <p className="label text-muted">Projekt</p>
-              <h3 className="mt-5 text-5xl font-bold tracking-tight text-balance sm:text-7xl">
+              <h3 className="text-5xl font-bold tracking-tight text-balance sm:text-7xl">
                 {p.name}
               </h3>
               <p className="mt-4 font-medium text-accent">{p.meta}</p>
@@ -105,15 +91,9 @@ export function ProjectsPin({ projects }: { projects: Project[] }) {
                 href={p.url}
                 target="_blank"
                 rel="noopener"
-                className="group mt-8 inline-flex items-center gap-2 border-b border-fg pb-0.5 text-sm font-semibold transition-colors hover:border-accent hover:text-accent"
+                className="mt-8 border-b border-fg pb-0.5 text-sm font-semibold transition-colors hover:border-accent hover:text-accent"
               >
                 {p.url.replace("https://", "")}
-                <span
-                  aria-hidden="true"
-                  className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                >
-                  ↗
-                </span>
               </a>
             </li>
           ))}

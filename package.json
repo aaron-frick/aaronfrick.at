@@ -10,8 +10,7 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "icons": "node scripts/generate-icons.mjs",
-    "particles": "node scripts/generate-particles.mjs"
+    "icons": "node scripts/generate-icons.mjs"
   },
   "dependencies": {
     "next": "16.4.6",

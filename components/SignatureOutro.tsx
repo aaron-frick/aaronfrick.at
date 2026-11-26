@@ -13,11 +13,11 @@ type Props = {
 };
 
 /**
- * Pfad i läuft im Schreib-Fortschritt w über [i · STAGGER, i · STAGGER + SPAN].
- * SPAN ergibt sich aus der Anzahl der Pfade, damit der letzte genau bei w = 1
- * fertig ist (bei 5 Pfaden: 0.6 wie vorgegeben).
+ * Zeitplan wie beim echten Schreiben: Jeder Strich bekommt einen Anteil am
+ * Schreib-Fortschritt w proportional zu seiner Länge (lange Züge dauern
+ * länger) und beginnt kurz bevor der vorherige fertig ist (OVERLAP).
  */
-const STAGGER = 0.1;
+const OVERLAP = 0.35;
 /** Bis hier (Scroll-Fortschritt) ist die Unterschrift vollständig geschrieben */
 const WRITE_END = 0.88;
 /** Ab hier erscheinen Logo und Name */
@@ -61,7 +61,23 @@ export function SignatureOutro({
     }
 
     section.dataset.ready = "";
-    const span = Math.max(0.2, 1 - (els.length - 1) * STAGGER);
+    const total = lengths.reduce((a, b) => a + b, 0);
+    const slots: { start: number; span: number }[] = [];
+    {
+      let cursor = 0;
+      lengths.forEach((len) => {
+        const span = len / total;
+        slots.push({ start: cursor, span });
+        cursor += span;
+      });
+      // leicht überlappen, auf [0, 1] normieren
+      const last = slots[slots.length - 1];
+      const end = last.start + last.span * (1 + OVERLAP);
+      slots.forEach((s) => {
+        s.start /= end;
+        s.span = (s.span * (1 + OVERLAP)) / end;
+      });
+    }
     let frame = 0;
     const update = () => {
       frame = 0;
@@ -70,7 +86,7 @@ export function SignatureOutro({
       const p = range > 0 ? Math.min(1, Math.max(0, -rect.top / range)) : 1;
       const w = Math.min(1, p / WRITE_END);
       els.forEach((el, i) => {
-        const local = Math.min(1, Math.max(0, (w - i * STAGGER) / span));
+        const local = Math.min(1, Math.max(0, (w - slots[i].start) / slots[i].span));
         el.style.strokeDashoffset = `${lengths[i] * (1 - local)}`;
       });
       if (p > SHOW_MARK) section.dataset.done = "";
@@ -101,7 +117,7 @@ export function SignatureOutro({
           viewBox={viewBox}
           role="img"
           aria-label="Unterschrift Aaron Frick"
-          className="h-auto w-[min(580px,80vw)] overflow-visible"
+          className="h-auto w-[min(480px,76vw)] overflow-visible"
           fill="none"
           stroke="currentColor"
           strokeWidth={3.4}
