@@ -50,6 +50,13 @@
   color-scheme: dark;
 }
 
+/* Navy-Abschnitte (z. B. „Über mich“): etwas heller als das Marken-Navy,
+   damit sich die Fläche auch im dunklen Modus abhebt (70 % Navy · 30 % Stahl). */
+.dark.tone-navy {
+  --bg: color-mix(in srgb, var(--brand-navy) 70%, var(--brand-stahl));
+  --surface: var(--bg);
+}
+
 @theme {
   /* Alles außerhalb des Design Systems abschalten */
   --color-*: initial;
@@ -203,32 +210,49 @@
   }
 }
 
-/* Kleiner Lichtkegel am Zeiger, nur auf den Linien des Löwen (Maske) */
-.cover-lion {
-  --glow: var(--brand-stahl-hell);
+/* Intro beim ersten Besuch: Der Löwe erscheint wie frisch gedruckt –
+   eine weiche Kante fährt von unten nach oben, dazu ein leichtes Setzen. */
+:root[data-intro] .lion-intro {
+  -webkit-mask-image: linear-gradient(to top, #000 40%, transparent 60%);
+  mask-image: linear-gradient(to top, #000 40%, transparent 60%);
+  -webkit-mask-size: 100% 250%;
+  mask-size: 100% 250%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation:
+    lion-reveal 1.9s cubic-bezier(0.55, 0, 0.3, 1) 0.1s both,
+    lion-settle 2.2s var(--ease-calm) both;
 }
-.dark .cover-lion {
-  --glow: var(--brand-weiss);
+@keyframes lion-reveal {
+  from {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
+  to {
+    -webkit-mask-position: 0 100%;
+    mask-position: 0 100%;
+  }
 }
-.cover-lion-glow {
-  pointer-events: none;
-  background: radial-gradient(
-    circle 80px at var(--mx, -999px) var(--my, -999px),
-    var(--glow),
-    transparent 75%
-  );
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-/* Maske erst beim Hover laden – spart den Download beim Seitenaufruf */
-.cover-lion:hover .cover-lion-glow {
-  -webkit-mask: url("/brand/loewe-maske-gross.png") center / contain no-repeat;
-  mask: url("/brand/loewe-maske-gross.png") center / contain no-repeat;
-  opacity: 1;
+@keyframes lion-settle {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+    filter: blur(6px);
+  }
+  40% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .cover-lion-glow {
-    display: none;
+  :root[data-intro] .lion-intro {
+    animation: none;
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 }
 
@@ -254,6 +278,12 @@
   display: flex;
   flex-direction: column;
 }
+/* Überschrift oben in der stehenden Fläche, unter dem Header */
+.pin-section[data-pin] .pin-heading {
+  position: relative;
+  z-index: 1;
+  padding-top: 7rem;
+}
 /* Projekte exakt in der Bildschirmmitte */
 .pin-section[data-pin] .pin-list {
   position: absolute;
@@ -278,10 +308,10 @@
 
 [data-reveal] {
   opacity: 0;
-  transform: translate3d(0, 2rem, 0);
+  transform: translate3d(0, 1.5rem, 0);
   transition:
-    opacity 1.1s var(--ease-calm),
-    transform 1.1s var(--ease-calm);
+    opacity 0.7s var(--ease-calm),
+    transform 0.7s var(--ease-calm);
   transition-delay: var(--reveal-delay, 0ms);
 }
 [data-reveal][data-shown] {
@@ -298,7 +328,7 @@
 
 /* ------------------------------------------------------------------ */
 /* Outro: Unterschrift (components/SignatureOutro.tsx)                 */
-/* Pfade werden per JS geschrieben; Logo + Name erscheinen bei p > 0.9 */
+/* Pfade werden per JS geschrieben; Logo + Name erscheinen bei p > 0.78*/
 /* ------------------------------------------------------------------ */
 
 .signature-outro[data-ready] .signature-mark {
@@ -311,55 +341,6 @@
 .signature-outro[data-ready][data-done] .signature-mark {
   opacity: 1;
   transform: none;
-}
-
-/* ------------------------------------------------------------------ */
-/* Logo im Header: Glanzstreifen beim Darüberfahren                    */
-/* ------------------------------------------------------------------ */
-
-/* Glanz läuft nur über Buchstaben (background-clip: text) und die Linien
-   des Löwen (Maske) – nie über den Hintergrund. */
-.logo-shine {
-  --shine: var(--brand-stahl-hell);
-}
-.logo-shine .shine-text {
-  background-image: linear-gradient(105deg, var(--fg) 0 42%, var(--shine) 50%, var(--fg) 58% 100%);
-  background-size: 300% 100%;
-  background-position: 100% 0;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.logo-shine .shine-text > span {
-  -webkit-text-fill-color: currentColor;
-}
-.logo-shine .shine-lion {
-  background-image: linear-gradient(
-    105deg,
-    transparent 0 42%,
-    var(--shine) 50%,
-    transparent 58% 100%
-  );
-  background-size: 300% 100%;
-  background-position: 100% 0;
-  -webkit-mask: url("/brand/loewe-maske.png") center / contain no-repeat;
-  mask: url("/brand/loewe-maske.png") center / contain no-repeat;
-}
-.logo-shine:hover .shine-text,
-.logo-shine:hover .shine-lion,
-.logo-shine:focus-visible .shine-text,
-.logo-shine:focus-visible .shine-lion {
-  background-position: 0 0;
-  transition: background-position 0.9s var(--ease-calm);
-}
-.logo-shine .shine-lion {
-  transition-delay: 0s;
-}
-@media (prefers-reduced-motion: reduce) {
-  .logo-shine .shine-text,
-  .logo-shine .shine-lion {
-    transition: none !important;
-  }
 }
 
 @utility label {

@@ -43,13 +43,11 @@ export function Lion({
 export function Logo() {
   return (
     <span className="inline-flex items-center gap-2.5">
-      <span className="relative block">
+      <span className="block">
         <Lion className="h-7 w-auto" />
-        {/* Glanz nur auf den Linien des Löwen (Maske), siehe .logo-shine */}
-        <span aria-hidden="true" className="shine-lion absolute inset-0" />
       </span>
       <span className="h-5 w-px bg-line" aria-hidden="true" />
-      <Wordmark className="shine-text text-lg leading-none" />
+      <Wordmark className="text-lg leading-none" />
     </span>
   );
 }

@@ -19,9 +19,21 @@ type Props = {
  */
 const OVERLAP = 0.35;
 /** Bis hier (Scroll-Fortschritt) ist die Unterschrift vollständig geschrieben */
-const WRITE_END = 0.88;
+const WRITE_END = 0.75;
 /** Ab hier erscheinen Logo und Name */
-const SHOW_MARK = 0.9;
+const SHOW_MARK = 0.78;
+
+/**
+ * Breitfeder: Jeder Strich wird mehrfach, entlang des Federwinkels leicht
+ * versetzt, gezeichnet. Quer zur Feder entstehen so breite Schattenstriche,
+ * längs zur Feder feine Haarstriche – wie mit einer echten Füllfeder.
+ */
+const NIB = { width: 4.5, angle: -38, copies: 8, stroke: 1.2 };
+const nibOffsets = Array.from({ length: NIB.copies }, (_, k) => {
+  const t = (k / (NIB.copies - 1) - 0.5) * NIB.width;
+  const a = (NIB.angle * Math.PI) / 180;
+  return `translate(${(Math.cos(a) * t).toFixed(3)} ${(Math.sin(a) * t).toFixed(3)})`;
+});
 
 /**
  * Scrollgesteuerte Unterschrift als Abschluss der Seite.
@@ -30,7 +42,7 @@ const SHOW_MARK = 0.9;
  * in der Bildschirmmitte stehen. Der Scroll-Fortschritt p (0 = Sticky beginnt,
  * 1 = Ende der Sektion) „schreibt“ die Pfade per stroke-dashoffset – rein an
  * die Scrollposition gekoppelt, vollständig umkehrbar, keine Zeitanimation.
- * Bei p > 0.9 erscheinen Logo und Name (CSS-Transition 400 ms).
+ * Bei p > SHOW_MARK erscheinen Logo und Name (CSS-Transition 400 ms).
  *
  * Pfade ersetzen: siehe lib/signature.ts.
  */
@@ -47,15 +59,16 @@ export function SignatureOutro({
     const svg = svgRef.current;
     if (!section || !svg) return;
 
-    const els = [...svg.querySelectorAll<SVGPathElement>("path")];
+    const all = [...svg.querySelectorAll<SVGPathElement>("path")];
+    // Pro Strich alle Feder-Kopien bündeln (gleiche Länge, gleicher Fortschritt).
+    const groups = paths.map((_, i) => all.filter((el) => el.dataset.i === `${i}`));
     // Längen einmalig messen – in viewBox-Einheiten, daher unabhängig von Resize.
-    const lengths = els.map((el) => el.getTotalLength());
-    els.forEach((el, i) => {
-      el.style.strokeDasharray = `${lengths[i]}`;
-    });
+    const lengths = groups.map((g) => g[0].getTotalLength());
+    groups.forEach((g, i) => g.forEach((el) => (el.style.strokeDasharray = `${lengths[i]}`)));
+    const els = groups;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      els.forEach((el) => (el.style.strokeDashoffset = "0"));
+      all.forEach((el) => (el.style.strokeDashoffset = "0"));
       section.dataset.done = "";
       return;
     }
@@ -85,9 +98,10 @@ export function SignatureOutro({
       const range = section.offsetHeight - window.innerHeight;
       const p = range > 0 ? Math.min(1, Math.max(0, -rect.top / range)) : 1;
       const w = Math.min(1, p / WRITE_END);
-      els.forEach((el, i) => {
+      els.forEach((g, i) => {
         const local = Math.min(1, Math.max(0, (w - slots[i].start) / slots[i].span));
-        el.style.strokeDashoffset = `${lengths[i] * (1 - local)}`;
+        const offset = `${lengths[i] * (1 - local)}`;
+        g.forEach((el) => (el.style.strokeDashoffset = offset));
       });
       if (p > SHOW_MARK) section.dataset.done = "";
       else delete section.dataset.done;
@@ -120,12 +134,16 @@ export function SignatureOutro({
           className="h-auto w-[min(480px,76vw)] overflow-visible"
           fill="none"
           stroke="currentColor"
-          strokeWidth={3.4}
+          strokeWidth={NIB.stroke}
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          {paths.map((d, i) => (
-            <path key={i} d={d} />
+          {nibOffsets.map((transform, k) => (
+            <g key={k} transform={transform}>
+              {paths.map((d, i) => (
+                <path key={i} d={d} data-i={i} />
+              ))}
+            </g>
           ))}
         </svg>
         <div className="signature-mark mt-10 flex items-center gap-4 sm:mt-12">
