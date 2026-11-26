@@ -20,8 +20,7 @@ export function Hero() {
         data-reveal
         className="mt-8 max-w-prose text-lg text-pretty text-muted [--reveal-delay:280ms] sm:text-xl"
       >
-        Plattformen, Apps und Websites – vorausschauend geplant, gebaut und betreut von einem Team,
-        das dich weiterbringt.
+        Plattformen, Apps und Websites – Software für Unternehmen, die nach vorne denken.
       </p>
       <div data-reveal className="mt-10 [--reveal-delay:400ms]">
         <Link

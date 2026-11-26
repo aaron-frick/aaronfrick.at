@@ -12,7 +12,7 @@ export const site = {
   title: "Frick. · Software aus Vorarlberg",
   slogan: "Software, die wirklich taugt.",
   description:
-    "Plattformen, Apps und Websites aus Vorarlberg – vorausschauend geplant, gebaut und betreut von einem Team, das dich weiterbringt.",
+    "Plattformen, Apps und Websites aus Vorarlberg – Software für Unternehmen, die nach vorne denken.",
   location: {
     city: "Feldkirch",
     region: "Vorarlberg",
