@@ -28,9 +28,7 @@ export function Cover() {
           sizes="(min-width: 640px) 208px, 160px"
           className="cover-lion h-48 w-auto sm:h-60"
         />
-        <p
-          className="mt-10 flex overflow-hidden pb-1 text-5xl font-bold tracking-tight sm:text-6xl"
-        >
+        <p className="mt-10 flex overflow-hidden pb-1 text-5xl font-bold tracking-tight sm:text-6xl">
           <span className="sr-only">Frick.</span>
           {letters.map((l, i) => (
             <span
