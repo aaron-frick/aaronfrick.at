@@ -24,7 +24,7 @@ export default function DatenschutzPage() {
       <section>
         <h2>Verantwortlicher</h2>
         <p>
-          {site.owner}, {legal.companyName}
+          {legal.companyName === site.owner ? site.owner : `${site.owner}, ${legal.companyName}`}
           <br />
           {legal.street}, {legal.postalCode} {location.city}, {location.country}
           <br />

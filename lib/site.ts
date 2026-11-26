@@ -28,11 +28,11 @@ export const site = {
   legal: {
     /** Wortlaut laut Gewerbeschein */
     companyName: "Aaron Frick",
-    street: "[TODO: Straße und Hausnummer]",
-    postalCode: "[TODO: PLZ]",
+    street: "Matschelserstraße 11a",
+    postalCode: "6800",
     uid: "[TODO: UID-Nummer, falls vorhanden]",
     trade: "[TODO: Gewerbe / Unternehmensgegenstand]",
-    authority: "[TODO: Gewerbebehörde, z. B. Bezirkshauptmannschaft Feldkirch]",
+    authority: "Bezirkshauptmannschaft Feldkirch",
     chamber: "[TODO: Wirtschaftskammer Vorarlberg, Fachgruppe]",
   },
 } as const;
