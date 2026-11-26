@@ -210,20 +210,40 @@
   }
 }
 
-/* Intro beim Aufruf der Startseite: Der Löwe erscheint wie frisch gedruckt –
-   eine weiche Kante fährt von unten nach oben, dazu ein leichtes Setzen. */
-:root[data-intro] .lion-intro {
-  -webkit-mask-image: linear-gradient(to top, #000 40%, transparent 60%);
-  mask-image: linear-gradient(to top, #000 40%, transparent 60%);
-  -webkit-mask-size: 100% 250%;
-  mask-size: 100% 250%;
+/* ------------------------------------------------------------------ */
+/* Intro „Gravur“ (components/CoverLion.tsx), bei jedem Aufruf          */
+/* 0,0–0,5 s  Laserstrich zieht sich von der Mitte auf                  */
+/* 0,5–2,3 s  Strich fährt hoch, darunter wird der Löwe „eingraviert“   */
+/* 2,3–2,8 s  Strich verglüht · 2,4–3,4 s Glanz läuft über die Linien   */
+/* ------------------------------------------------------------------ */
+
+.lion-intro {
+  --scan: var(--brand-stahl);
+  --shine: var(--brand-stahl-hell);
+  --rise: 1.8s cubic-bezier(0.45, 0, 0.25, 1) 0.5s;
+}
+.dark .lion-intro {
+  --scan: var(--brand-stahl-hell);
+  --shine: var(--brand-weiss);
+}
+.lion-shine,
+.lion-scan-track {
+  display: none;
+}
+
+:root[data-intro] .lion-art {
+  /* harte, leicht weiche Kante, die mit dem Laserstrich nach oben wandert */
+  -webkit-mask-image: linear-gradient(to top, #000 48%, transparent 52%);
+  mask-image: linear-gradient(to top, #000 48%, transparent 52%);
+  -webkit-mask-size: 100% 200%;
+  mask-size: 100% 200%;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   animation:
-    lion-reveal 1.9s cubic-bezier(0.55, 0, 0.3, 1) 0.1s both,
-    lion-settle 2.2s var(--ease-calm) both;
+    lion-engrave var(--rise) both,
+    lion-settle 2.4s var(--ease-calm) 0.4s both;
 }
-@keyframes lion-reveal {
+@keyframes lion-engrave {
   from {
     -webkit-mask-position: 0 0;
     mask-position: 0 0;
@@ -235,24 +255,93 @@
 }
 @keyframes lion-settle {
   from {
-    opacity: 0;
-    transform: scale(1.06);
-    filter: blur(6px);
-  }
-  40% {
-    opacity: 1;
+    transform: scale(1.1);
+    filter: blur(10px);
   }
   to {
-    opacity: 1;
     transform: none;
     filter: none;
   }
 }
+
+/* Laserstrich: Spur fährt von unten (100 %) nach oben (0) */
+:root[data-intro] .lion-scan-track {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: lion-rise var(--rise) both;
+}
+:root[data-intro] .lion-scan {
+  position: absolute;
+  top: 0;
+  left: -15%;
+  right: -15%;
+  height: 2px;
+  margin-top: -1px;
+  background: linear-gradient(90deg, transparent, var(--scan) 20%, var(--scan) 80%, transparent);
+  box-shadow:
+    0 0 12px 1px color-mix(in srgb, var(--scan) 70%, transparent),
+    0 0 48px 6px color-mix(in srgb, var(--scan) 35%, transparent);
+  animation:
+    lion-scan-open 0.5s var(--ease-calm) both,
+    lion-scan-out 0.5s ease-in 2.3s both;
+}
+@keyframes lion-rise {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes lion-scan-open {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+@keyframes lion-scan-out {
+  to {
+    transform: scaleX(1.4);
+    opacity: 0;
+  }
+}
+
+/* Metallischer Glanz, nur auf den Linien des Löwen (Maske) */
+:root[data-intro] .lion-shine {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 38%, var(--shine) 50%, transparent 62%) 100% 0 /
+    300% 100% no-repeat;
+  -webkit-mask: url("/brand/loewe-maske-gross.png") center / contain no-repeat;
+  mask: url("/brand/loewe-maske-gross.png") center / contain no-repeat;
+  animation: lion-shine 1s cubic-bezier(0.4, 0, 0.2, 1) 2.4s both;
+}
+@keyframes lion-shine {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  :root[data-intro] .lion-intro {
+  :root[data-intro] .lion-art {
     animation: none;
     -webkit-mask-image: none;
     mask-image: none;
+  }
+  :root[data-intro] .lion-shine,
+  :root[data-intro] .lion-scan-track {
+    display: none;
   }
 }
 
@@ -331,9 +420,6 @@
 /* Pfade werden per JS geschrieben; Logo + Name erscheinen bei p > 0.78*/
 /* ------------------------------------------------------------------ */
 
-.signature-outro[data-inked] .signature-fallback {
-  display: none;
-}
 .signature-outro[data-ready] .signature-mark {
   opacity: 0;
   transform: translateY(8px);
