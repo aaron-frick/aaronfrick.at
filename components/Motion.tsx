@@ -1,23 +1,15 @@
 "use client";
 
-import Lenis from "lenis";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 /**
  * Bewegung für die ganze Seite:
- * - weiches Scrollen (Lenis), nicht bei „Bewegung reduzieren“
  * - [data-reveal]-Elemente blenden beim Hineinscrollen ein
  * - Scroll-Fortschritt des Covers (--p) und Header-Sichtbarkeit
  */
 export function Motion() {
   const pathname = usePathname();
-
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const lenis = new Lenis({ autoRaf: true, lerp: 0.09, anchors: { offset: -72 } });
-    return () => lenis.destroy();
-  }, []);
 
   useEffect(() => {
     const root = document.documentElement;

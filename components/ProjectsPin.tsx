@@ -22,7 +22,8 @@ export function ProjectsPin({ projects }: { projects: Project[] }) {
     const items = itemRefs.current.slice();
     const n = projects.length;
     section.dataset.pin = "";
-    section.style.height = `${(n + 1) * 100}svh`;
+    // ca. 1,2 Bildschirmhöhen Scrollweg pro Projekt + Ein-/Auslauf
+    section.style.height = `${n * 120 + 100}svh`;
 
     let frame = 0;
     const update = () => {
@@ -36,13 +37,14 @@ export function ProjectsPin({ projects }: { projects: Project[] }) {
         if (!el) return;
         const t = pos - (i + 0.5); // <0: kommt, 0: Mitte, >0: geht
         const d = Math.abs(t);
-        // Plateau um die Mitte, danach schneller „Wusch“: unscharf + Versatz.
-        // Bei d = 0.5 (Wechsel) ist das alte fast weg, das neue kommt gerade.
-        const fade = Math.max(0, d - 0.14);
-        const opacity = Math.min(1, Math.max(0, 1 - fade * 3));
+        // Langes Plateau: das Projekt steht ruhig und scharf in der Mitte.
+        // Erst danach ein schneller „Wusch“: unscharf + Versatz nach oben/unten.
+        const fade = Math.max(0, d - 0.3) / 0.2; // 0 … 1 zwischen d = 0.3 und 0.5
+        const f = Math.min(1, fade);
+        const opacity = 1 - f;
         el.style.opacity = opacity.toFixed(3);
-        el.style.filter = `blur(${(fade * 28).toFixed(2)}px)`;
-        el.style.transform = `translate3d(0, ${(-t * 14).toFixed(2)}vh, 0)`;
+        el.style.filter = `blur(${(f * 14).toFixed(2)}px)`;
+        el.style.transform = `translate3d(0, ${(-Math.sign(t) * f * f * 18).toFixed(2)}vh, 0)`;
         el.style.visibility = opacity < 0.01 ? "hidden" : "visible";
         if (d < 0.5) active = i;
       });

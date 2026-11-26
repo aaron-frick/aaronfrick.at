@@ -13,9 +13,10 @@ import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const H = 560; // Arbeitshöhe in px
-const STEP = 5; // Rasterabstand
-const JITTER = 1.6;
+const H = 760; // Arbeitshöhe in px
+const STEP = 6; // Raster für Fläche und Kontur
+const LINE_STEP = 2.6; // feines Raster für die Gravurlinien
+const JITTER = 1.2;
 
 // deterministischer Zufall, damit die Datei stabil bleibt
 let seed = 7;
@@ -68,26 +69,38 @@ while (stack.length) {
 }
 
 const pts = [];
+const isOutside = (x, y) => {
+  const xi = Math.round(x);
+  const yi = Math.round(y);
+  return xi < 0 || yi < 0 || xi >= W || yi >= H || outside[yi * W + xi] === 1;
+};
+
+// 1) Gravurlinien fein abtasten – trägt das Detail (Mähne, Krallen, Schraffur)
+for (let gy = 0; gy < H; gy += LINE_STEP) {
+  for (let gx = 0; gx < W; gx += LINE_STEP) {
+    const x = gx + (rand() - 0.5) * JITTER;
+    const y = gy + (rand() - 0.5) * JITTER;
+    const a = alpha(x, y);
+    if (a < 150 || rand() > 0.72) continue;
+    pts.push(
+      Math.round(x * 10) / 10,
+      Math.round(y * 10) / 10,
+      Math.round(62 + (a / 255) * 30 + rand() * 8),
+    );
+  }
+}
+
+// 2) Fläche locker füllen (gedämpft), Konturnähe etwas heller
 for (let gy = STEP / 2; gy < H; gy += STEP) {
   for (let gx = STEP / 2; gx < W; gx += STEP) {
     const x = gx + (rand() - 0.5) * JITTER * 2;
     const y = gy + (rand() - 0.5) * JITTER * 2;
-    const xi = Math.round(Math.min(W - 1, Math.max(0, x)));
-    const yi = Math.round(Math.min(H - 1, Math.max(0, y)));
-    const inside = !outside[yi * W + xi];
-    if (!inside) continue;
-    // Nähe zum Rand der Silhouette -> Kontur
+    if (isOutside(x, y) || alpha(x, y) > 60) continue;
     let edge = false;
-    for (let dy = -5; dy <= 5 && !edge; dy += 5)
-      for (let dx = -5; dx <= 5 && !edge; dx += 5) {
-        const xx = xi + dx;
-        const yy = yi + dy;
-        if (xx < 0 || yy < 0 || xx >= W || yy >= H || outside[yy * W + xx]) edge = true;
-      }
-    const onLine = alpha(x, y) > 215;
-    if (edge) pts.push(xi, yi, Math.round(82 + rand() * 18));
-    else if (onLine && rand() < 0.8) pts.push(xi, yi, Math.round(52 + rand() * 22));
-    else if (rand() < 0.42) pts.push(xi, yi, Math.round(10 + rand() * 12));
+    for (let dy = -4; dy <= 4 && !edge; dy += 4)
+      for (let dx = -4; dx <= 4 && !edge; dx += 4) if (isOutside(x + dx, y + dy)) edge = true;
+    if (edge) pts.push(Math.round(x), Math.round(y), Math.round(40 + rand() * 20));
+    else if (rand() < 0.45) pts.push(Math.round(x), Math.round(y), Math.round(8 + rand() * 10));
   }
 }
 

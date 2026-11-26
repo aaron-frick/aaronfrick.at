@@ -156,6 +156,12 @@ async function main() {
     .png()
     .toFile(p("public/icons/icon-maskable-512.png"));
 
+  // Kleine Maske des Löwen für den Glanz über dem Header-Logo
+  await sharp(p("public/brand/loewe-navy.png"))
+    .resize({ height: 96 })
+    .png({ compressionLevel: 9 })
+    .toFile(p("public/brand/loewe-maske.png"));
+
   console.log("Icons erzeugt.");
 }
 

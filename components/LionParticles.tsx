@@ -26,6 +26,12 @@ export function LionParticles({ className = "" }: { className?: string }) {
     let t0 = 0;
     let rgb = "28,42,71";
     let lastColor = 0;
+    // Zeiger für den Glanz (Canvas-Pixel), -1 = nicht über dem Löwen
+    let mx = -1e6;
+    let my = -1e6;
+    let hover = 0; // 0–1, weich ein-/ausgeblendet
+    let hoverTarget = 0;
+    let sweepT = -10; // Startzeit des Glanzstreifens
 
     let n = 0;
     let src: Data | null = null;
@@ -92,12 +98,17 @@ export function LionParticles({ className = "" }: { className?: string }) {
         lastColor = now;
       }
       const scroll = Math.min(1, Math.max(0, window.scrollY / host!.offsetHeight));
-      const size = Math.min(W / (src.w / src.h), H * 0.66);
+      // beim Wegscrollen früh und vollständig auflösen (kein harter Rand)
+      const fadeOut = Math.max(0, 1 - scroll * 1.9);
+      const size = Math.min(W / (src.w / src.h), H * 0.7);
       const ox = (W - (src.w / src.h) * size) / 2;
-      const oy = (H - size) / 2;
-      const dot = Math.max(1.2, size / 300);
-      // Lichtband entlang der Diagonale
+      const oy = (H - size) / 2 - scroll * H * 0.12;
+      const dot = Math.max(1, size / 420);
+      // Lichtband entlang der Diagonale (ruhig) + Glanzstreifen beim Hover (schnell)
       const band = reduce ? -9 : ((t * 0.16) % 1.7) - 0.35;
+      const sweep = (t - sweepT) * 1.25 - 0.25;
+      hover += (hoverTarget - hover) * 0.08;
+      const flareR = size * 0.16;
 
       ctx!.clearRect(0, 0, W, H);
       ctx!.fillStyle = `rgb(${rgb})`;
@@ -108,13 +119,34 @@ export function LionParticles({ className = "" }: { className?: string }) {
         let y = sy[i] + (ty[i] - sy[i]) * k;
         x += dx[i] * scroll;
         y += dy[i] * scroll;
+        let px = ox + x * size;
+        let py = oy + y * size;
         const diag = (tx[i] * (src.h / src.w) + (1 - ty[i])) / 2;
         const glow = Math.exp(-((diag - band) ** 2) / 0.006);
+        const shine = sweep > -0.3 && sweep < 1.4 ? Math.exp(-((diag - sweep) ** 2) / 0.002) : 0;
+        // Glanz am Zeiger: Punkte leuchten auf und weichen leicht aus
+        let flare = 0;
+        if (hover > 0.01) {
+          const ddx = px - mx;
+          const ddy = py - my;
+          const d2 = ddx * ddx + ddy * ddy;
+          if (d2 < flareR * flareR * 4) {
+            flare = Math.exp(-d2 / (flareR * flareR)) * hover;
+            const push = flare * flareR * 0.12;
+            const d = Math.sqrt(d2) || 1;
+            px += (ddx / d) * push;
+            py += (ddy / d) * push;
+          }
+        }
         const twinkle = reduce ? 1 : 0.82 + 0.18 * Math.sin(t * 2.2 + phase[i]);
-        const a = Math.min(1, (b[i] * twinkle + glow * 0.55) * k * (1 - scroll));
+        const a = Math.min(
+          1,
+          (b[i] * twinkle + glow * 0.45 + shine * 0.9 + flare * 0.9) * k * fadeOut,
+        );
         if (a < 0.02) continue;
         ctx!.globalAlpha = a;
-        ctx!.fillRect(ox + x * size, oy + y * size, dot, dot);
+        const s = dot * (1 + flare * 0.8 + shine * 0.4);
+        ctx!.fillRect(px, py, s, s);
       }
       ctx!.globalAlpha = 1;
     }
@@ -147,6 +179,28 @@ export function LionParticles({ className = "" }: { className?: string }) {
     if (document.readyState === "complete") start();
     else window.addEventListener("load", start, { once: true });
 
+    // Glanz beim Darüberfahren
+    const onMove = (e: PointerEvent) => {
+      const r = canvas.getBoundingClientRect();
+      const dpr = canvas.width / (r.width || 1);
+      mx = (e.clientX - r.left) * dpr;
+      my = (e.clientY - r.top) * dpr;
+    };
+    const onEnter = (e: PointerEvent) => {
+      onMove(e);
+      hoverTarget = 1;
+      sweepT = (performance.now() - t0) / 1000;
+      wake();
+    };
+    const onLeave = () => {
+      hoverTarget = 0;
+    };
+    if (!reduce) {
+      host.addEventListener("pointermove", onMove);
+      host.addEventListener("pointerenter", onEnter);
+      host.addEventListener("pointerleave", onLeave);
+    }
+
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
     window.addEventListener("scroll", wake, { passive: true });
@@ -161,6 +215,9 @@ export function LionParticles({ className = "" }: { className?: string }) {
     return () => {
       alive = false;
       window.removeEventListener("load", start);
+      host.removeEventListener("pointermove", onMove);
+      host.removeEventListener("pointerenter", onEnter);
+      host.removeEventListener("pointerleave", onLeave);
       cancelAnimationFrame(raf);
       ro.disconnect();
       mo.disconnect();

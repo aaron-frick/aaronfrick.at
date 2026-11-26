@@ -25,7 +25,7 @@ export function Cover() {
           alt=""
           priority
           sizes="(min-width: 640px) 480px, 70vw"
-          className="cover-ghost h-[66svh] w-auto max-w-[90vw] object-contain dark:invert"
+          className="cover-ghost h-[70svh] w-auto max-w-[90vw] object-contain dark:invert"
         />
       </div>
       <LionParticles className="absolute inset-0 size-full" />

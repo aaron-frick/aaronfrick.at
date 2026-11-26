@@ -27,6 +27,9 @@
   --line: color-mix(in srgb, var(--brand-navy) 16%, transparent);
   --line-strong: var(--brand-navy);
   --on-accent: var(--brand-weiss);
+  /* Outro (Unterschrift): Vorgabe außerhalb der Brand-Palette */
+  --outro-bg: #f2f3f5;
+  --outro-ink: #0c0d0e;
 
   color-scheme: light;
 }
@@ -41,6 +44,8 @@
   --line: color-mix(in srgb, var(--brand-weiss) 18%, transparent);
   --line-strong: var(--brand-weiss);
   --on-accent: var(--brand-navy);
+  --outro-bg: var(--brand-navy);
+  --outro-ink: var(--brand-weiss);
 
   color-scheme: dark;
 }
@@ -110,6 +115,8 @@
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
   --color-on-accent: var(--on-accent);
+  --color-outro-bg: var(--outro-bg);
+  --color-outro-ink: var(--outro-ink);
 
   --color-navy: var(--brand-navy);
   --color-stahl: var(--brand-stahl);
@@ -160,24 +167,6 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* Weiches Scrollen (Lenis)                                            */
-/* ------------------------------------------------------------------ */
-
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-html.lenis {
-  scroll-behavior: auto;
-}
-.lenis:not(.lenis-autoToggle).lenis-stopped {
-  overflow: clip;
-}
-.lenis.lenis-smooth iframe {
-  pointer-events: none;
-}
-
-/* ------------------------------------------------------------------ */
 /* Header: fährt erst herein, wenn das Cover weggescrollt ist           */
 /* ------------------------------------------------------------------ */
 
@@ -186,6 +175,17 @@ html.lenis {
 }
 :root[data-cover-active] .site-header {
   transform: translateY(-105%);
+}
+
+/* Vorhang: weiche Oberkante statt hartem Rand über dem Cover */
+.curtain::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 100%;
+  height: 40svh;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--bg));
 }
 
 /* ------------------------------------------------------------------ */
@@ -232,18 +232,23 @@ html.lenis {
   display: flex;
   flex-direction: column;
 }
+/* Kopfzeile oben, Projekte exakt in der Bildschirmmitte (nicht im Restraum) */
 .pin-section[data-pin] .pin-head {
-  padding-top: 6rem;
+  position: absolute;
+  top: 6rem;
+  inset-inline: var(--spacing-gutter);
+  z-index: 1;
 }
 .pin-section[data-pin] .pin-list {
-  position: relative;
-  flex: 1;
+  position: absolute;
+  inset: 0;
   margin-top: 0;
   display: block;
 }
 .pin-section[data-pin] .pin-item {
   position: absolute;
   inset: 0;
+  padding-inline: var(--spacing-gutter);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -276,28 +281,69 @@ html.lenis {
 }
 
 /* ------------------------------------------------------------------ */
-/* Outro: Unterschrift schreibt sich beim Scrollen (Signature.tsx)     */
-/* Ohne [data-pin]: fertig geschrieben, normal im Fluss.               */
+/* Outro: Unterschrift (components/SignatureOutro.tsx)                 */
+/* Pfade werden per JS geschrieben; Logo + Name erscheinen bei p > 0.9 */
 /* ------------------------------------------------------------------ */
 
-.sig-stage {
-  padding-block: 8rem;
-}
-.sig-section[data-pin] {
-  height: 260svh;
-}
-.sig-section[data-pin] .sig-stage {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  padding-block: 0;
-}
-.sig-section[data-pin] .sig-path {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-}
-.sig-section[data-pin] .sig-mark {
+.signature-outro[data-ready] .signature-mark {
   opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 400ms ease,
+    transform 400ms ease;
+}
+.signature-outro[data-ready][data-done] .signature-mark {
+  opacity: 1;
+  transform: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Logo im Header: Glanzstreifen beim Darüberfahren                    */
+/* ------------------------------------------------------------------ */
+
+/* Glanz läuft nur über Buchstaben (background-clip: text) und die Linien
+   des Löwen (Maske) – nie über den Hintergrund. */
+.logo-shine {
+  --shine: var(--brand-stahl-hell);
+}
+.logo-shine .shine-text {
+  background-image: linear-gradient(105deg, var(--fg) 0 42%, var(--shine) 50%, var(--fg) 58% 100%);
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.logo-shine .shine-text > span {
+  -webkit-text-fill-color: currentColor;
+}
+.logo-shine .shine-lion {
+  background-image: linear-gradient(
+    105deg,
+    transparent 0 42%,
+    var(--shine) 50%,
+    transparent 58% 100%
+  );
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  -webkit-mask: url("/brand/loewe-maske.png") center / contain no-repeat;
+  mask: url("/brand/loewe-maske.png") center / contain no-repeat;
+}
+.logo-shine:hover .shine-text,
+.logo-shine:hover .shine-lion,
+.logo-shine:focus-visible .shine-text,
+.logo-shine:focus-visible .shine-lion {
+  background-position: 0 0;
+  transition: background-position 0.9s var(--ease-calm);
+}
+.logo-shine .shine-lion {
+  transition-delay: 0s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-shine .shine-text,
+  .logo-shine .shine-lion {
+    transition: none !important;
+  }
 }
 
 @utility label {
