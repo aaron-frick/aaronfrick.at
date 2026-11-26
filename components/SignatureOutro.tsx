@@ -15,9 +15,14 @@ type Props = {
 /**
  * Zeitplan wie beim echten Schreiben: Jeder Strich bekommt einen Anteil am
  * Schreib-Fortschritt w proportional zu seiner Länge (lange Züge dauern
- * länger) und beginnt kurz bevor der vorherige fertig ist (OVERLAP).
+ * länger) und beginnt knapp bevor der vorherige fertig ist (OVERLAP).
  */
-const OVERLAP = 0.35;
+const OVERLAP = 0.06;
+/**
+ * Nachgleiten der Feder: Pro Frame holt der Schreibstand diesen Anteil des
+ * Abstands zum Scroll-Ziel auf – ruckelfreies, flüssiges Schreiben.
+ */
+const GLIDE = 0.09;
 /** Bis hier (Scroll-Fortschritt) ist die Unterschrift vollständig geschrieben */
 const WRITE_END = 0.75;
 /** Ab hier erscheinen Logo und Name */
@@ -151,24 +156,35 @@ export function SignatureOutro({
         s.span = (s.span * (1 + OVERLAP)) / end;
       });
     }
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      const rect = section.getBoundingClientRect();
-      const range = section.offsetHeight - window.innerHeight;
-      const p = range > 0 ? Math.min(1, Math.max(0, -rect.top / range)) : 1;
-      const w = Math.min(1, p / WRITE_END);
+    const draw = (w: number) => {
       guides.forEach((el, i) => {
         const local = Math.min(1, Math.max(0, (w - slots[i].start) / slots[i].span));
         el.style.strokeDashoffset = `${lengths[i] * (1 - local)}`;
       });
+    };
+    const target = () => {
+      const rect = section.getBoundingClientRect();
+      const range = section.offsetHeight - window.innerHeight;
+      const p = range > 0 ? Math.min(1, Math.max(0, -rect.top / range)) : 1;
       if (p > SHOW_MARK) section.dataset.done = "";
       else delete section.dataset.done;
+      return Math.min(1, p / WRITE_END);
+    };
+
+    let frame = 0;
+    let goal = target();
+    let current = goal;
+    const tick = () => {
+      const diff = goal - current;
+      current = Math.abs(diff) < 0.0005 ? goal : current + diff * GLIDE;
+      draw(current);
+      frame = current === goal ? 0 : requestAnimationFrame(tick);
     };
     const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
+      goal = target();
+      if (!frame) frame = requestAnimationFrame(tick);
     };
-    update();
+    draw(current);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
