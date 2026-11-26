@@ -5,7 +5,7 @@ import { ThemeToggle } from "./ThemeToggle";
 
 export function Header() {
   return (
-    <header className="site-header fixed inset-x-0 top-0 z-40 border-t-4 border-t-accent bg-bg/90 backdrop-blur-sm">
+    <header className="site-header fixed inset-x-0 top-0 z-40 border-b border-line bg-bg/90 backdrop-blur-sm">
       <div className="mx-auto flex h-16 max-w-page items-center justify-between px-gutter">
         <Link href="/" aria-label="Frick. – zur Startseite" className="-m-1 p-1">
           <Logo />

@@ -1,27 +1,25 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import loeweHell from "@/public/brand/loewe-hell.png";
-import { Wordmark } from "./Logo";
 
 /** Vor dem ersten Paint: Header ausblenden, solange das Cover im Bild ist. */
 const coverScript = `document.documentElement.dataset.coverActive=""`;
 
+const letters = ["F", "r", "i", "c", "k"];
+
 /**
- * Startscreen: Navy-Fläche mit Löwe und „Frick.“. Blendet sanft ein und bleibt
- * stehen. Beim Scrollen gleitet der Inhalt mit leichtem Parallax weg
- * (--p = Scroll-Fortschritt 0–1, gesetzt von components/Motion.tsx).
+ * Startscreen: Navy-Fläche mit Löwe und „Frick.“. Der Löwe baut sich von unten
+ * auf, die Buchstaben steigen nacheinander auf. Das Cover bleibt stehen (sticky);
+ * die Seite schiebt sich beim Scrollen wie ein Vorhang darüber.
  */
 export function Cover() {
   return (
     <section
       data-cover
       aria-label="Frick. – Aaron Frick, Feldkirch"
-      className="dark relative -mt-17 h-svh overflow-hidden bg-bg text-fg"
+      className="dark sticky top-0 -mt-16 h-svh overflow-hidden bg-bg text-fg"
     >
       <script dangerouslySetInnerHTML={{ __html: coverScript }} />
-      <span
-        aria-hidden="true"
-        className="cover-bar absolute inset-x-0 top-0 block h-1 origin-left bg-accent"
-      />
       <div className="cover-inner flex h-full flex-col items-center justify-center">
         <Image
           src={loeweHell}
@@ -30,19 +28,29 @@ export function Cover() {
           sizes="(min-width: 640px) 208px, 160px"
           className="cover-lion h-48 w-auto sm:h-60"
         />
-        <span className="cover-word mt-10 block text-5xl sm:text-6xl">
-          <Wordmark />
-        </span>
+        <p
+          className="mt-10 flex overflow-hidden pb-1 text-5xl font-bold tracking-tight sm:text-6xl"
+        >
+          <span className="sr-only">Frick.</span>
+          {letters.map((l, i) => (
+            <span
+              key={i}
+              aria-hidden="true"
+              className="cover-letter inline-block"
+              style={{ "--i": i } as CSSProperties}
+            >
+              {l}
+            </span>
+          ))}
+          <span
+            aria-hidden="true"
+            className="cover-letter inline-block text-accent"
+            style={{ "--i": letters.length } as CSSProperties}
+          >
+            .
+          </span>
+        </p>
       </div>
-      <a
-        href="#start"
-        className="cover-hint absolute inset-x-0 bottom-8 mx-auto flex w-max flex-col items-center gap-3 text-muted transition-colors hover:text-fg"
-      >
-        <span className="label">Scrollen</span>
-        <span aria-hidden="true" className="relative block h-10 w-px bg-line">
-          <span className="absolute inset-0 block bg-fg motion-safe:animate-scroll-hint" />
-        </span>
-      </a>
     </section>
   );
 }

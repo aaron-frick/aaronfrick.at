@@ -61,7 +61,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             Zum Inhalt springen
           </a>
           <Header />
-          <main id="inhalt" className="flex-1 pt-17" tabIndex={-1}>
+          <main id="inhalt" className="flex-1 pt-16" tabIndex={-1}>
             {children}
           </main>
           <Footer />

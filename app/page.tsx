@@ -6,9 +6,12 @@ export default function Home() {
   return (
     <>
       <Cover />
-      <Hero />
-      <Projects />
-      <About />
+      {/* Schiebt sich beim Scrollen wie ein Vorhang über das stehende Cover */}
+      <div className="relative z-10 bg-bg">
+        <Hero />
+        <Projects />
+        <About />
+      </div>
     </>
   );
 }

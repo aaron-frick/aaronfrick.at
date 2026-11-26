@@ -189,73 +189,91 @@ html.lenis {
 }
 
 /* ------------------------------------------------------------------ */
-/* Cover: sanftes Einblenden, bleibt stehen, gleitet beim Scrollen weg */
+/* Cover: Löwe baut sich auf, Buchstaben steigen auf. Bleibt stehen,   */
+/* die Seite schiebt sich darüber (Vorhang). Kein Ausblenden.          */
 /* ------------------------------------------------------------------ */
 
-.cover-bar {
-  animation: cover-bar 1.8s var(--ease-calm) 0.2s both;
-}
+/* Startwerte bewusst teilweise sichtbar: Chrome wertet vollständig
+   verdeckte Elemente nicht als LCP. */
 .cover-lion {
-  animation: cover-in 1.8s var(--ease-calm) 0.15s both;
+  animation: cover-lion 1.6s cubic-bezier(0.65, 0, 0.35, 1) 0.1s both;
 }
-.cover-word {
-  animation: cover-in-up 1.4s var(--ease-calm) 0.7s both;
-}
-.cover-hint {
-  animation: cover-fade 1.2s var(--ease-calm) 1.5s both;
+.cover-letter {
+  animation: cover-letter 0.9s var(--ease-calm) both;
+  animation-delay: calc(0.75s + var(--i, 0) * 70ms);
 }
 .cover-inner {
-  /* --p: Scroll-Fortschritt 0–1 (components/Motion.tsx) */
-  transform: translate3d(0, calc(var(--p, 0) * 32svh), 0) scale(calc(1 - var(--p, 0) * 0.08));
-  opacity: calc(1 - var(--p, 0) * 1.3);
-  will-change: transform, opacity;
+  /* --p: Scroll-Fortschritt 0–1 (components/Motion.tsx) – nur leicht zurückweichen */
+  transform: scale(calc(1 - var(--p, 0) * 0.06));
+  transform-origin: 50% 40%;
 }
 
-@keyframes cover-bar {
+@keyframes cover-lion {
   from {
-    transform: scaleX(0);
+    clip-path: inset(62% 0 0 0);
+    transform: translateY(1.25rem);
   }
   to {
-    transform: scaleX(1);
-  }
-}
-/* Startwerte bewusst > 0: Chrome wertet Elemente mit Deckkraft 0 nicht als LCP. */
-@keyframes cover-in {
-  from {
-    opacity: 0.12;
-    transform: scale(0.96);
-    filter: blur(8px);
-  }
-  to {
-    opacity: 1;
+    clip-path: inset(0 0 0 0);
     transform: none;
-    filter: none;
   }
 }
-@keyframes cover-in-up {
+@keyframes cover-letter {
   from {
-    opacity: 0.12;
-    transform: translateY(1rem);
-    filter: blur(4px);
+    transform: translateY(70%);
   }
   to {
-    opacity: 1;
     transform: none;
-    filter: none;
-  }
-}
-@keyframes cover-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
   }
 }
 @media (prefers-reduced-motion: reduce) {
   .cover-inner {
     transform: none;
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* Projekte · Auswahl: gepinnte Sequenz (components/ProjectsPin.tsx)   */
+/* Ohne [data-pin] (kein JS / Bewegung reduziert): normale Liste.      */
+/* ------------------------------------------------------------------ */
+
+.pin-stage {
+  padding-block: 6rem;
+}
+.pin-list {
+  display: grid;
+  gap: 4rem;
+  margin-top: 3rem;
+  text-align: center;
+}
+.pin-counter:empty {
+  display: none;
+}
+.pin-section[data-pin] .pin-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  padding-block: 0;
+  display: flex;
+  flex-direction: column;
+}
+.pin-section[data-pin] .pin-head {
+  padding-top: 6rem;
+}
+.pin-section[data-pin] .pin-list {
+  position: relative;
+  flex: 1;
+  margin-top: 0;
+  display: block;
+}
+.pin-section[data-pin] .pin-item {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, opacity, filter;
 }
 
 /* ------------------------------------------------------------------ */
@@ -288,18 +306,19 @@ html.lenis {
 
 .outro-signature {
   clip-path: inset(0 100% 0 0);
-  transition: clip-path 2.2s cubic-bezier(0.65, 0, 0.35, 1);
+  /* gleichmäßig wie ein Stift, am Ende leicht auslaufend */
+  transition: clip-path 2.8s cubic-bezier(0.45, 0.05, 0.4, 1);
 }
 .outro-word,
 .outro-after {
   opacity: 0;
   transform: translateY(0.75rem);
   transition:
-    opacity 0.9s var(--ease-calm) 1.8s,
-    transform 0.9s var(--ease-calm) 1.8s;
+    opacity 0.9s var(--ease-calm) 2.6s,
+    transform 0.9s var(--ease-calm) 2.6s;
 }
 .outro-after {
-  transition-delay: 2.3s;
+  transition-delay: 3.2s;
 }
 .outro[data-shown] .outro-signature {
   clip-path: inset(0 0 0 0);
