@@ -77,7 +77,7 @@ export default async function OpengraphImage() {
             Frick<span style={{ color: STAHL_HELL }}>.</span>
           </div>
           <div style={{ display: "flex", fontSize: 36, fontWeight: 600, marginTop: 24 }}>
-            Klein aufgestellt, aber verbindlich.
+            {site.slogan}
           </div>
         </div>
         <div

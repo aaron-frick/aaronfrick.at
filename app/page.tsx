@@ -1,6 +1,7 @@
 import { Cover } from "@/components/Cover";
 import { Hero } from "@/components/Hero";
 import { About, Projects } from "@/components/sections";
+import { SignatureOutro } from "@/components/Signature";
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
         <Hero />
         <Projects />
         <About />
+        <SignatureOutro />
       </div>
     </>
   );

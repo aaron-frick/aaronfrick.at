@@ -1,32 +1,29 @@
-/**
- * Projekte · Auswahl. Reihenfolge = Anzeige.
- * TODO: Platzhalter durch echte Projekte ersetzen (3–5 Stück reichen).
- */
+/** Projekte · Auswahl. Reihenfolge = Anzeige. */
 export type Project = {
   name: string;
-  /** z. B. „Projektbegleitung · Feldkirch“ */
+  /** Kurz, was es ist */
   meta: string;
-  year: string;
+  url: string;
   text: string;
 };
 
 export const projects: Project[] = [
   {
-    name: "[TODO: Projektname]",
-    meta: "[TODO: Leistung · Ort]",
-    year: "[TODO: Jahr]",
-    text: "[TODO: Ein Satz: Was war die Aufgabe, was ist herausgekommen?]",
+    name: "MaturaTickets",
+    meta: "Ticketplattform für Maturabälle und Schulfeste",
+    url: "https://maturatickets.at",
+    text: "Schulen verkaufen ihre Balltickets online – sofort als PDF mit QR-Code, Einlass per Scan.",
   },
   {
-    name: "[TODO: Projektname]",
-    meta: "[TODO: Leistung · Ort]",
-    year: "[TODO: Jahr]",
-    text: "[TODO: Ein Satz: Was war die Aufgabe, was ist herausgekommen?]",
+    name: "Tickez",
+    meta: "Ticketverkauf für Clubs, Partys und Events",
+    url: "https://tickez.at",
+    text: "Veranstalter verkaufen Tickets selbst: QR-Code sofort per E-Mail, Einlass mit dem Handy.",
   },
   {
-    name: "[TODO: Projektname]",
-    meta: "[TODO: Leistung · Ort]",
-    year: "[TODO: Jahr]",
-    text: "[TODO: Ein Satz: Was war die Aufgabe, was ist herausgekommen?]",
+    name: "GoNow",
+    meta: "Betriebssystem für Taxiunternehmen",
+    url: "https://gonow.at",
+    text: "App, Telefon und Straße in einem System – die Fahrt bleibt beim Betrieb vor Ort.",
   },
 ];

@@ -93,12 +93,26 @@ export function ProjectsPin({ projects }: { projects: Project[] }) {
               }}
               className="pin-item"
             >
-              <p className="label text-muted tabular-nums">{p.year}</p>
-              <h3 className="mt-5 text-4xl font-bold tracking-tight text-balance sm:text-6xl">
+              <p className="label text-muted">Projekt</p>
+              <h3 className="mt-5 text-5xl font-bold tracking-tight text-balance sm:text-7xl">
                 {p.name}
               </h3>
               <p className="mt-4 font-medium text-accent">{p.meta}</p>
               <p className="mx-auto mt-6 max-w-prose text-muted">{p.text}</p>
+              <a
+                href={p.url}
+                target="_blank"
+                rel="noopener"
+                className="group mt-8 inline-flex items-center gap-2 border-b border-fg pb-0.5 text-sm font-semibold transition-colors hover:border-accent hover:text-accent"
+              >
+                {p.url.replace("https://", "")}
+                <span
+                  aria-hidden="true"
+                  className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                >
+                  ↗
+                </span>
+              </a>
             </li>
           ))}
         </ol>

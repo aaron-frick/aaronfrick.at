@@ -9,9 +9,10 @@ export const site = {
   domain: "aaronfrick.at",
   url: "https://aaronfrick.at",
   locale: "de-AT",
-  title: "Frick. · Aaron Frick, Feldkirch",
+  title: "Frick. · Software aus Vorarlberg",
+  slogan: "Software, die wirklich taugt.",
   description:
-    "Beratung, Projektbegleitung und Organisation aus Feldkirch. Eine Ansprechperson, klare Zusagen, jeder Schritt mit Datum.",
+    "Plattformen, Apps und Websites aus Feldkirch – geplant, gebaut und betreut von Aaron Frick. Eine Ansprechperson, jede Zusage mit Datum.",
   location: {
     city: "Feldkirch",
     region: "Vorarlberg",

@@ -13,8 +13,8 @@ export function About() {
       <div className="grid gap-12 lg:grid-cols-9 lg:gap-8">
         <div data-reveal className="lg:col-span-5">
           <p className="text-2xl leading-snug font-semibold tracking-tight text-pretty sm:text-3xl">
-            Ich bin Aaron Frick. Ich arbeite von Feldkirch aus für Menschen und Betriebe in
-            Vorarlberg.
+            Ich bin Aaron Frick. Ich baue von Feldkirch aus Software für Betriebe und Veranstalter
+            in Vorarlberg.
           </p>
           <p className="mt-6 max-w-prose text-muted">
             [TODO: Zwei bis drei Sätze zu Werdegang, Erfahrung und warum Frick. – kurz, in der

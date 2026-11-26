@@ -189,46 +189,21 @@ html.lenis {
 }
 
 /* ------------------------------------------------------------------ */
-/* Cover: Löwe baut sich auf, Buchstaben steigen auf. Bleibt stehen,   */
-/* die Seite schiebt sich darüber (Vorhang). Kein Ausblenden.          */
+/* Cover: Löwe als Punktwolke (components/LionParticles.tsx)           */
 /* ------------------------------------------------------------------ */
 
-/* Startwerte bewusst teilweise sichtbar: Chrome wertet vollständig
-   verdeckte Elemente nicht als LCP. */
-.cover-lion {
-  animation: cover-lion 1.6s cubic-bezier(0.65, 0, 0.35, 1) 0.1s both;
+/* Gestochener Löwe als schwacher Schatten – sichtbar, bis die Punkte da
+   sind (und Fallback ohne JavaScript). */
+.cover-ghost {
+  opacity: 0.1;
+  transition: opacity 1.4s var(--ease-calm);
 }
-.cover-letter {
-  animation: cover-letter 0.9s var(--ease-calm) both;
-  animation-delay: calc(0.75s + var(--i, 0) * 70ms);
+[data-particles] .cover-ghost {
+  opacity: 0;
 }
-.cover-inner {
-  /* --p: Scroll-Fortschritt 0–1 (components/Motion.tsx) – nur leicht zurückweichen */
-  transform: scale(calc(1 - var(--p, 0) * 0.06));
-  transform-origin: 50% 40%;
-}
-
-@keyframes cover-lion {
-  from {
-    clip-path: inset(62% 0 0 0);
-    transform: translateY(1.25rem);
-  }
-  to {
-    clip-path: inset(0 0 0 0);
-    transform: none;
-  }
-}
-@keyframes cover-letter {
-  from {
-    transform: translateY(70%);
-  }
-  to {
-    transform: none;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .cover-inner {
-    transform: none;
+@media (scripting: none) {
+  .cover-ghost {
+    opacity: 1;
   }
 }
 
@@ -301,42 +276,28 @@ html.lenis {
 }
 
 /* ------------------------------------------------------------------ */
-/* Outro: Unterschrift schreibt sich, dann „Frick.“, dann Kontakt      */
+/* Outro: Unterschrift schreibt sich beim Scrollen (Signature.tsx)     */
+/* Ohne [data-pin]: fertig geschrieben, normal im Fluss.               */
 /* ------------------------------------------------------------------ */
 
-.outro-signature {
-  clip-path: inset(0 100% 0 0);
-  /* gleichmäßig wie ein Stift, am Ende leicht auslaufend */
-  transition: clip-path 2.8s cubic-bezier(0.45, 0.05, 0.4, 1);
+.sig-stage {
+  padding-block: 8rem;
 }
-.outro-word,
-.outro-after {
+.sig-section[data-pin] {
+  height: 260svh;
+}
+.sig-section[data-pin] .sig-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  padding-block: 0;
+}
+.sig-section[data-pin] .sig-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.sig-section[data-pin] .sig-mark {
   opacity: 0;
-  transform: translateY(0.75rem);
-  transition:
-    opacity 0.9s var(--ease-calm) 2.6s,
-    transform 0.9s var(--ease-calm) 2.6s;
-}
-.outro-after {
-  transition-delay: 3.2s;
-}
-.outro[data-shown] .outro-signature {
-  clip-path: inset(0 0 0 0);
-}
-.outro[data-shown] .outro-word,
-.outro[data-shown] .outro-after {
-  opacity: 1;
-  transform: none;
-}
-@media (prefers-reduced-motion: reduce), (scripting: none) {
-  .outro-signature,
-  .outro-word,
-  .outro-after {
-    clip-path: none;
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
 }
 
 @utility label {
