@@ -82,7 +82,7 @@ export function Services() {
 
 export function About() {
   return (
-    <Section id="ueber-mich" label="Über mich" tone="surface">
+    <Section id="ueber-mich" label="Über mich" tone="navy">
       <div className="grid gap-12 lg:grid-cols-9 lg:gap-8">
         <div className="lg:col-span-5">
           <p className="text-2xl leading-snug font-semibold tracking-tight text-pretty sm:text-3xl">
@@ -120,7 +120,17 @@ export function Contact() {
       }
     >
       <div className="grid gap-16 lg:grid-cols-9 lg:gap-8">
-        <dl className="lg:col-span-3">
+        <div className="lg:col-span-6">
+          <ContactForm />
+          <p className="mt-8 text-sm text-muted">
+            Ihre Angaben verwende ich nur, um Ihre Anfrage zu beantworten. Mehr dazu in der{" "}
+            <Link href="/datenschutz" className="underline underline-offset-4 hover:text-fg">
+              Datenschutzerklärung
+            </Link>
+            .
+          </p>
+        </div>
+        <dl className="lg:col-span-3 lg:pt-1">
           <Fact label="Telefon">
             <a href={site.contact.phoneHref} className="underline-offset-4 hover:underline">
               {site.contact.phone}
@@ -138,16 +148,6 @@ export function Contact() {
             {site.location.city} · {site.location.region}
           </Fact>
         </dl>
-        <div className="lg:col-span-6">
-          <ContactForm />
-          <p className="mt-6 text-sm text-muted">
-            Ihre Angaben verwende ich nur, um Ihre Anfrage zu beantworten. Mehr dazu in der{" "}
-            <Link href="/datenschutz" className="underline underline-offset-4 hover:text-fg">
-              Datenschutzerklärung
-            </Link>
-            .
-          </p>
-        </div>
       </div>
     </Section>
   );

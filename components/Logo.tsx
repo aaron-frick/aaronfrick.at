@@ -42,10 +42,10 @@ export function Lion({
 /** Lockup: Löwe · Haarlinie · Wortmarke (Guidelines S. 04). */
 export function Logo() {
   return (
-    <span className="inline-flex items-center gap-3">
-      <Lion className="h-9 w-auto" />
-      <span className="h-7 w-px bg-line" aria-hidden="true" />
-      <Wordmark className="text-2xl leading-none" />
+    <span className="inline-flex items-center gap-2.5">
+      <Lion className="h-7 w-auto" />
+      <span className="h-5 w-px bg-line" aria-hidden="true" />
+      <Wordmark className="text-lg leading-none" />
     </span>
   );
 }

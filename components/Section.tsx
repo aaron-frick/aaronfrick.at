@@ -5,7 +5,8 @@ type SectionProps = {
   label: string;
   title?: ReactNode;
   children: ReactNode;
-  tone?: "default" | "surface";
+  /** "navy": Fläche immer in Navy (setzt die dunklen Tokens für den Bereich). */
+  tone?: "default" | "navy";
 };
 
 /** Abschnitt mit kleinem Label links und Inhalt rechts (Label-Raster). */
@@ -14,7 +15,7 @@ export function Section({ id, label, title, children, tone = "default" }: Sectio
     <section
       id={id}
       aria-labelledby={`${id}-label`}
-      className={tone === "surface" ? "bg-surface dark:border-y dark:border-line" : undefined}
+      className={tone === "navy" ? "dark border-y border-line bg-bg text-fg" : undefined}
     >
       <div className="mx-auto grid max-w-page gap-10 px-gutter py-24 sm:py-32 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-3">

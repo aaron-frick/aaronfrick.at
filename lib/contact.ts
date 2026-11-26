@@ -1,6 +1,14 @@
 import { z } from "zod";
 
+export const contactTopics = [
+  "Beratung",
+  "Projektbegleitung",
+  "Organisation",
+  "Etwas anderes",
+] as const;
+
 export const contactSchema = z.object({
+  topic: z.enum(contactTopics, { error: "Bitte wählen Sie ein Thema." }),
   name: z
     .string()
     .trim()

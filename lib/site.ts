@@ -24,9 +24,6 @@ export const site = {
     // TODO: E-Mail-Adresse bestätigen
     email: "kontakt@aaronfrick.at",
   },
-  /** Erreichbarkeit für den Status im Hero (Ortszeit Vorarlberg). */
-  // TODO: Erreichbarkeitszeiten bestätigen
-  hours: { days: [1, 2, 3, 4, 5], from: 8, to: 18 },
   legal: {
     companyName: "[TODO: Firmenwortlaut laut Gewerbeschein]",
     street: "[TODO: Straße und Hausnummer]",

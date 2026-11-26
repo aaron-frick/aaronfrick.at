@@ -6,6 +6,7 @@ import { site } from "@/lib/site";
 
 export async function sendContact(_prev: ContactState, formData: FormData): Promise<ContactState> {
   const values = {
+    topic: String(formData.get("topic") ?? ""),
     name: String(formData.get("name") ?? ""),
     email: String(formData.get("email") ?? ""),
     message: String(formData.get("message") ?? ""),
@@ -37,14 +38,14 @@ export async function sendContact(_prev: ContactState, formData: FormData): Prom
     };
   }
 
-  const { name, email, message } = parsed.data;
+  const { topic, name, email, message } = parsed.data;
   const resend = new Resend(apiKey);
   const { error } = await resend.emails.send({
     from,
     to,
     replyTo: email,
-    subject: `Anfrage über ${site.domain}: ${name}`,
-    text: `Name: ${name}\nE-Mail: ${email}\n\n${message}\n`,
+    subject: `Anfrage über ${site.domain}: ${topic} – ${name}`,
+    text: `Thema: ${topic}\nName: ${name}\nE-Mail: ${email}\n\n${message}\n`,
   });
 
   if (error) {
