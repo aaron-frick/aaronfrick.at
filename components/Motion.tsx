@@ -22,7 +22,8 @@ export function Motion() {
           io.unobserve(entry.target);
         }
       },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
+      // Schon kurz bevor ein Element den Bildschirm erreicht auslösen
+      { rootMargin: "0px 0px 10% 0px", threshold: 0 },
     );
     document.querySelectorAll("[data-reveal]:not([data-shown])").forEach((el) => io.observe(el));
 

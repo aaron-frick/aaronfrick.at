@@ -7,7 +7,7 @@ export function Header() {
   return (
     <header className="site-header fixed inset-x-0 top-0 z-40 border-b border-line bg-bg/90 backdrop-blur-sm">
       <div className="mx-auto flex h-16 max-w-page items-center justify-between px-gutter">
-        <Link href="/" aria-label="Frick. – zur Startseite" className="logo-shine -m-1 p-1">
+        <Link href="/" aria-label="Frick. – zur Startseite" className="-m-1 p-1">
           <Logo />
         </Link>
         <nav aria-label="Hauptnavigation" className="flex items-center gap-6 sm:gap-8">
