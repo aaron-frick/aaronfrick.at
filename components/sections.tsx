@@ -14,11 +14,13 @@ export function About() {
         <div data-reveal className="lg:col-span-5">
           <p className="text-2xl leading-snug font-semibold tracking-tight text-pretty sm:text-3xl">
             Ich bin Aaron Frick. Ich baue von Feldkirch aus Software für Betriebe und Veranstalter
-            in Vorarlberg.
+            im DACH-Raum.
           </p>
           <p className="mt-6 max-w-prose text-muted">
-            [TODO: Zwei bis drei Sätze zu Werdegang, Erfahrung und warum Frick. – kurz, in der
-            Ich-Form.]
+            Angefangen habe ich mit eigenen Produkten: MaturaTickets, Tickez und GoNow habe ich
+            selbst geplant, gebaut und betreut. Seit 2026 mache ich das mit Frick. auch für andere –
+            Software, die so durchdacht ist wie ein eigenes Produkt. Ein Ansprechpartner von der
+            ersten Idee bis zum laufenden Betrieb, direkt aus Feldkirch.
           </p>
         </div>
         <dl data-reveal className="[--reveal-delay:150ms] lg:col-span-4">
@@ -26,8 +28,8 @@ export function About() {
           <Fact label="Sitz">
             {site.location.city} · {site.location.region}
           </Fact>
-          <Fact label="Gebiet">[TODO: Einsatzgebiet bestätigen]</Fact>
-          <Fact label="Seit">[TODO: Gründungsjahr]</Fact>
+          <Fact label="Gebiet">DACH-Raum</Fact>
+          <Fact label="Seit">2026</Fact>
         </dl>
       </div>
     </Section>
