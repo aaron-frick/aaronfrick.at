@@ -12,7 +12,7 @@ export const site = {
   title: "Frick. · Software aus Vorarlberg",
   slogan: "Software, die wirklich taugt.",
   description:
-    "Plattformen, Apps und Websites aus Feldkirch – geplant, gebaut und betreut von Aaron Frick. Eine Ansprechperson, jede Zusage mit Datum.",
+    "Plattformen, Apps und Websites aus Vorarlberg – vorausschauend geplant, gebaut und betreut von einem Team, das dich weiterbringt.",
   location: {
     city: "Feldkirch",
     region: "Vorarlberg",

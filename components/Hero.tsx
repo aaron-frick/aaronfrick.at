@@ -20,8 +20,8 @@ export function Hero() {
         data-reveal
         className="mt-8 max-w-prose text-lg text-pretty text-muted [--reveal-delay:280ms] sm:text-xl"
       >
-        Plattformen, Apps und Websites aus Vorarlberg – geplant, gebaut und betreut von einer
-        Person. Jede Zusage mit Datum.
+        Plattformen, Apps und Websites – vorausschauend geplant, gebaut und betreut von einem Team,
+        das dich weiterbringt.
       </p>
       <div data-reveal className="mt-10 [--reveal-delay:400ms]">
         <Link

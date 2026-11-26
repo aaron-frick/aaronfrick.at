@@ -12,9 +12,14 @@ type Props = {
   name?: string;
 };
 
-/** Pfad i läuft im globalen Fortschritt [i · STAGGER, i · STAGGER + SPAN]. */
+/**
+ * Pfad i läuft im Schreib-Fortschritt w über [i · STAGGER, i · STAGGER + SPAN].
+ * SPAN ergibt sich aus der Anzahl der Pfade, damit der letzte genau bei w = 1
+ * fertig ist (bei 5 Pfaden: 0.6 wie vorgegeben).
+ */
 const STAGGER = 0.1;
-const SPAN = 0.6;
+/** Bis hier (Scroll-Fortschritt) ist die Unterschrift vollständig geschrieben */
+const WRITE_END = 0.88;
 /** Ab hier erscheinen Logo und Name */
 const SHOW_MARK = 0.9;
 
@@ -56,14 +61,16 @@ export function SignatureOutro({
     }
 
     section.dataset.ready = "";
+    const span = Math.max(0.2, 1 - (els.length - 1) * STAGGER);
     let frame = 0;
     const update = () => {
       frame = 0;
       const rect = section.getBoundingClientRect();
       const range = section.offsetHeight - window.innerHeight;
       const p = range > 0 ? Math.min(1, Math.max(0, -rect.top / range)) : 1;
+      const w = Math.min(1, p / WRITE_END);
       els.forEach((el, i) => {
-        const local = Math.min(1, Math.max(0, (p - i * STAGGER) / SPAN));
+        const local = Math.min(1, Math.max(0, (w - i * STAGGER) / span));
         el.style.strokeDashoffset = `${lengths[i] * (1 - local)}`;
       });
       if (p > SHOW_MARK) section.dataset.done = "";
@@ -105,9 +112,11 @@ export function SignatureOutro({
             <path key={i} d={d} />
           ))}
         </svg>
-        <div className="signature-mark mt-7 flex items-center gap-3">
-          <Lion className="h-5 w-auto" />
-          <span className="text-[0.8125rem] font-semibold tracking-[0.15em] uppercase">{name}</span>
+        <div className="signature-mark mt-10 flex items-center gap-4 sm:mt-12">
+          <Lion className="h-11 w-auto sm:h-14" />
+          <span className="text-xl font-semibold tracking-[0.15em] uppercase sm:text-2xl">
+            {name}
+          </span>
         </div>
       </div>
     </section>

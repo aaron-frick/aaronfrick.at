@@ -5,8 +5,9 @@ import { useEffect, useRef } from "react";
 type Data = { w: number; h: number; p: number[] };
 
 /**
- * Der Löwe als Punktwolke (Canvas). Beim Laden fliegen die Punkte aus einem
- * diagonalen Strom zusammen, danach wandert ein Lichtband über den Löwen.
+ * Der Löwe als Punktwolke (Canvas). Die Punkte stehen fest und blenden beim
+ * Laden nur kurz ein; ein ruhiges Lichtband wandert über den Löwen. Beim
+ * Darüberfahren leuchten die Punkte unter dem Zeiger auf (ohne sich zu bewegen).
  * Beim Wegscrollen zerstreuen sich die Punkte.
  * Farbe = aktuelle Textfarbe (Navy im hellen, Weiß im dunklen Modus).
  * Punkte: public/brand/loewe-punkte.json (scripts/generate-particles.mjs).
@@ -31,12 +32,11 @@ export function LionParticles({ className = "" }: { className?: string }) {
     let my = -1e6;
     let hover = 0; // 0–1, weich ein-/ausgeblendet
     let hoverTarget = 0;
-    let sweepT = -10; // Startzeit des Glanzstreifens
 
     let n = 0;
     let src: Data | null = null;
     let tx: Float32Array, ty: Float32Array, b: Float32Array;
-    let sx: Float32Array, sy: Float32Array, delay: Float32Array, phase: Float32Array;
+    let delay: Float32Array, phase: Float32Array;
     let dx: Float32Array, dy: Float32Array;
 
     const readColor = () => {
@@ -63,8 +63,6 @@ export function LionParticles({ className = "" }: { className?: string }) {
       tx = new Float32Array(n);
       ty = new Float32Array(n);
       b = new Float32Array(n);
-      sx = new Float32Array(n);
-      sy = new Float32Array(n);
       delay = new Float32Array(n);
       phase = new Float32Array(n);
       dx = new Float32Array(n);
@@ -73,11 +71,7 @@ export function LionParticles({ className = "" }: { className?: string }) {
         tx[i] = d.p[i * 3] / d.h;
         ty[i] = d.p[i * 3 + 1] / d.h;
         b[i] = d.p[i * 3 + 2] / 100;
-        // Start: diagonaler Strom von links unten
-        const r = Math.random();
-        sx[i] = tx[i] - 0.9 - r * 0.9;
-        sy[i] = ty[i] + 0.7 + r * 0.7;
-        delay[i] = Math.random() * 0.55 + (1 - ty[i]) * 0.35;
+        delay[i] = Math.random() * 0.4;
         phase[i] = Math.random() * Math.PI * 2;
         const a = Math.random() * Math.PI * 2;
         const s = 0.25 + Math.random() * 0.6;
@@ -106,46 +100,32 @@ export function LionParticles({ className = "" }: { className?: string }) {
       const dot = Math.max(1, size / 420);
       // Lichtband entlang der Diagonale (ruhig) + Glanzstreifen beim Hover (schnell)
       const band = reduce ? -9 : ((t * 0.16) % 1.7) - 0.35;
-      const sweep = (t - sweepT) * 1.25 - 0.25;
       hover += (hoverTarget - hover) * 0.08;
       const flareR = size * 0.16;
 
       ctx!.clearRect(0, 0, W, H);
       ctx!.fillStyle = `rgb(${rgb})`;
       for (let i = 0; i < n; i++) {
-        const k = ease(Math.min(1, Math.max(0, (t - delay[i]) / 1.7)));
+        // nur kurzes Einblenden an Ort und Stelle
+        const k = ease(Math.min(1, Math.max(0, (t - delay[i]) / 0.8)));
         if (k <= 0) continue;
-        let x = sx[i] + (tx[i] - sx[i]) * k;
-        let y = sy[i] + (ty[i] - sy[i]) * k;
-        x += dx[i] * scroll;
-        y += dy[i] * scroll;
-        let px = ox + x * size;
-        let py = oy + y * size;
+        const px = ox + (tx[i] + dx[i] * scroll) * size;
+        const py = oy + (ty[i] + dy[i] * scroll) * size;
         const diag = (tx[i] * (src.h / src.w) + (1 - ty[i])) / 2;
         const glow = Math.exp(-((diag - band) ** 2) / 0.006);
-        const shine = sweep > -0.3 && sweep < 1.4 ? Math.exp(-((diag - sweep) ** 2) / 0.002) : 0;
-        // Glanz am Zeiger: Punkte leuchten auf und weichen leicht aus
+        // Leuchten am Zeiger – Punkte bleiben an ihrem Platz
         let flare = 0;
         if (hover > 0.01) {
           const ddx = px - mx;
           const ddy = py - my;
           const d2 = ddx * ddx + ddy * ddy;
-          if (d2 < flareR * flareR * 4) {
-            flare = Math.exp(-d2 / (flareR * flareR)) * hover;
-            const push = flare * flareR * 0.12;
-            const d = Math.sqrt(d2) || 1;
-            px += (ddx / d) * push;
-            py += (ddy / d) * push;
-          }
+          if (d2 < flareR * flareR * 4) flare = Math.exp(-d2 / (flareR * flareR)) * hover;
         }
         const twinkle = reduce ? 1 : 0.82 + 0.18 * Math.sin(t * 2.2 + phase[i]);
-        const a = Math.min(
-          1,
-          (b[i] * twinkle + glow * 0.45 + shine * 0.9 + flare * 0.9) * k * fadeOut,
-        );
+        const a = Math.min(1, (b[i] * twinkle + glow * 0.45 + flare * 1.1) * k * fadeOut);
         if (a < 0.02) continue;
         ctx!.globalAlpha = a;
-        const s = dot * (1 + flare * 0.8 + shine * 0.4);
+        const s = dot * (1 + flare * 0.6);
         ctx!.fillRect(px, py, s, s);
       }
       ctx!.globalAlpha = 1;
@@ -189,7 +169,6 @@ export function LionParticles({ className = "" }: { className?: string }) {
     const onEnter = (e: PointerEvent) => {
       onMove(e);
       hoverTarget = 1;
-      sweepT = (performance.now() - t0) / 1000;
       wake();
     };
     const onLeave = () => {

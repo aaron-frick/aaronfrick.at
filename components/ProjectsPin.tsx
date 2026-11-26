@@ -22,8 +22,8 @@ export function ProjectsPin({ projects }: { projects: Project[] }) {
     const items = itemRefs.current.slice();
     const n = projects.length;
     section.dataset.pin = "";
-    // ca. 1,2 Bildschirmhöhen Scrollweg pro Projekt + Ein-/Auslauf
-    section.style.height = `${n * 120 + 100}svh`;
+    // ca. 2,2 Bildschirmhöhen Scrollweg pro Projekt + Ein-/Auslauf
+    section.style.height = `${n * 220 + 100}svh`;
 
     let frame = 0;
     const update = () => {
