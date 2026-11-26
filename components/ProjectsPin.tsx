@@ -82,7 +82,8 @@ export function ProjectsPin({ projects }: { projects: Project[] }) {
               }}
               className="pin-item"
             >
-              <h3 className="text-5xl font-bold tracking-tight text-balance sm:text-7xl">
+              <p className="label text-muted">Projekt</p>
+              <h3 className="mt-5 text-5xl font-bold tracking-tight text-balance sm:text-7xl">
                 {p.name}
               </h3>
               <p className="mt-4 font-medium text-accent">{p.meta}</p>
