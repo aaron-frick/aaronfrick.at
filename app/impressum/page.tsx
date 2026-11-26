@@ -18,8 +18,13 @@ export default function ImpressumPage() {
         <p>
           <strong>{legal.companyName}</strong>
           <br />
-          Inhaber: {site.owner}
-          <br />
+          {/* „Inhaber“ nur, wenn der Firmenwortlaut vom Namen abweicht */}
+          {legal.companyName !== site.owner ? (
+            <>
+              Inhaber: {site.owner}
+              <br />
+            </>
+          ) : null}
           {legal.street}
           <br />
           {legal.postalCode} {location.city}, {location.country}

@@ -21,9 +21,7 @@ export function Footer() {
           </p>
         </div>
         <div className="flex flex-col gap-4 border-t border-line py-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            {site.location.region}, {site.location.country}
-          </p>
+          <p>Made in Austria</p>
           <nav aria-label="Rechtliches">
             <ul className="flex gap-8">
               <li>

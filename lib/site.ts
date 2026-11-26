@@ -26,7 +26,8 @@ export const site = {
     email: "kontakt@aaronfrick.at",
   },
   legal: {
-    companyName: "[TODO: Firmenwortlaut laut Gewerbeschein]",
+    /** Wortlaut laut Gewerbeschein */
+    companyName: "Aaron Frick",
     street: "[TODO: Straße und Hausnummer]",
     postalCode: "[TODO: PLZ]",
     uid: "[TODO: UID-Nummer, falls vorhanden]",
