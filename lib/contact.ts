@@ -1,0 +1,26 @@
+import { z } from "zod";
+
+export const contactSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(2, { error: "Bitte Namen angeben." })
+    .max(120, { error: "Der Name ist zu lang." }),
+  email: z.email({ error: "Bitte gültige E-Mail angeben." }).max(200),
+  message: z
+    .string()
+    .trim()
+    .min(10, { error: "Ein, zwei Sätze helfen mir beim Einordnen." })
+    .max(4000, { error: "Die Nachricht ist zu lang (max. 4000 Zeichen)." }),
+});
+
+export type ContactFields = keyof z.infer<typeof contactSchema>;
+
+export type ContactState = {
+  status: "idle" | "success" | "error";
+  message?: string;
+  errors?: Partial<Record<ContactFields, string>>;
+  values?: Partial<Record<ContactFields, string>>;
+};
+
+export const initialContactState: ContactState = { status: "idle" };
