@@ -33,7 +33,10 @@ export function ProjectsPin({ projects }: { projects: Project[] }) {
       const pos = progress * n; // 0 … n
       items.forEach((el, i) => {
         if (!el) return;
-        const t = pos - (i + 0.5); // <0: kommt, 0: Mitte, >0: geht
+        let t = pos - (i + 0.5); // <0: kommt, 0: Mitte, >0: geht
+        // Erstes Projekt ist beim Hineinscrollen schon da, letztes bleibt bis zum Ende.
+        if (i === 0) t = Math.max(0, t);
+        if (i === n - 1) t = Math.min(0, t);
         const d = Math.abs(t);
         // Langes Plateau: das Projekt steht ruhig und scharf in der Mitte.
         // Erst danach ein schneller „Wusch“: unscharf + Versatz nach oben/unten.
@@ -70,10 +73,8 @@ export function ProjectsPin({ projects }: { projects: Project[] }) {
       className="pin-section relative"
     >
       <div className="pin-stage mx-auto max-w-page px-gutter">
-        <h2 id="projekte-label" className="pin-heading flex items-center justify-center gap-4">
-          <span aria-hidden="true" className="h-px w-8 bg-accent" />
-          <span className="label text-accent">Projekte</span>
-          <span aria-hidden="true" className="h-px w-8 bg-accent" />
+        <h2 id="projekte-label" className="sr-only">
+          Projekte
         </h2>
         <ol className="pin-list">
           {projects.map((p, i) => (
@@ -84,7 +85,12 @@ export function ProjectsPin({ projects }: { projects: Project[] }) {
               }}
               className="pin-item"
             >
-              <p className="label text-muted">Projekt</p>
+              {/* Überschrift sitzt direkt über dem Projektnamen und wechselt mit */}
+              <p aria-hidden="true" className="flex items-center justify-center gap-4">
+                <span className="h-px w-8 bg-accent" />
+                <span className="label text-accent">Projekte</span>
+                <span className="h-px w-8 bg-accent" />
+              </p>
               <h3 className="mt-5 text-5xl font-bold tracking-tight text-balance sm:text-7xl">
                 {p.name}
               </h3>

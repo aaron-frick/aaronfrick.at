@@ -257,11 +257,6 @@
   flex-direction: column;
 }
 /* Überschrift oben in der stehenden Fläche, unter dem Header */
-.pin-section[data-pin] .pin-heading {
-  position: relative;
-  z-index: 1;
-  padding-top: 7rem;
-}
 /* Projekte exakt in der Bildschirmmitte */
 .pin-section[data-pin] .pin-list {
   position: absolute;
