@@ -50,6 +50,13 @@
   color-scheme: dark;
 }
 
+/* Navy-Abschnitte (z. B. „Über mich“): etwas heller als das Marken-Navy,
+   damit sich die Fläche auch im dunklen Modus abhebt (70 % Navy · 30 % Stahl). */
+.dark.tone-navy {
+  --bg: color-mix(in srgb, var(--brand-navy) 70%, var(--brand-stahl));
+  --surface: var(--bg);
+}
+
 @theme {
   /* Alles außerhalb des Design Systems abschalten */
   --color-*: initial;
@@ -203,6 +210,52 @@
   }
 }
 
+/* Intro beim ersten Besuch: Der Löwe erscheint wie frisch gedruckt –
+   eine weiche Kante fährt von unten nach oben, dazu ein leichtes Setzen. */
+:root[data-intro] .lion-intro {
+  -webkit-mask-image: linear-gradient(to top, #000 40%, transparent 60%);
+  mask-image: linear-gradient(to top, #000 40%, transparent 60%);
+  -webkit-mask-size: 100% 250%;
+  mask-size: 100% 250%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation:
+    lion-reveal 1.9s cubic-bezier(0.55, 0, 0.3, 1) 0.1s both,
+    lion-settle 2.2s var(--ease-calm) both;
+}
+@keyframes lion-reveal {
+  from {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
+  to {
+    -webkit-mask-position: 0 100%;
+    mask-position: 0 100%;
+  }
+}
+@keyframes lion-settle {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+    filter: blur(6px);
+  }
+  40% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root[data-intro] .lion-intro {
+    animation: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
 /* ------------------------------------------------------------------ */
 /* Projekte · Auswahl: gepinnte Sequenz (components/ProjectsPin.tsx)   */
 /* Ohne [data-pin] (kein JS / Bewegung reduziert): normale Liste.      */
@@ -224,6 +277,12 @@
   padding-block: 0;
   display: flex;
   flex-direction: column;
+}
+/* Überschrift oben in der stehenden Fläche, unter dem Header */
+.pin-section[data-pin] .pin-heading {
+  position: relative;
+  z-index: 1;
+  padding-top: 7rem;
 }
 /* Projekte exakt in der Bildschirmmitte */
 .pin-section[data-pin] .pin-list {

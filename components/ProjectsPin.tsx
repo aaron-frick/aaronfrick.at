@@ -70,8 +70,10 @@ export function ProjectsPin({ projects }: { projects: Project[] }) {
       className="pin-section relative"
     >
       <div className="pin-stage mx-auto max-w-page px-gutter">
-        <h2 id="projekte-label" className="sr-only">
-          Projekte
+        <h2 id="projekte-label" className="pin-heading flex items-center justify-center gap-4">
+          <span aria-hidden="true" className="h-px w-8 bg-accent" />
+          <span className="label text-accent">Projekte</span>
+          <span aria-hidden="true" className="h-px w-8 bg-accent" />
         </h2>
         <ol className="pin-list">
           {projects.map((p, i) => (

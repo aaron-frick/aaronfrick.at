@@ -15,7 +15,7 @@ export function Section({ id, label, title, children, tone = "default" }: Sectio
     <section
       id={id}
       aria-labelledby={`${id}-label`}
-      className={tone === "navy" ? "dark border-y border-line bg-bg text-fg" : undefined}
+      className={tone === "navy" ? "dark tone-navy bg-bg text-fg" : undefined}
     >
       <div className="mx-auto grid max-w-page gap-10 px-gutter py-24 sm:py-32 lg:grid-cols-12 lg:gap-8">
         <div data-reveal className="lg:col-span-3">
