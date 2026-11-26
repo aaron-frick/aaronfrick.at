@@ -2,9 +2,9 @@ import { CoverLion } from "./CoverLion";
 
 /**
  * Vor dem ersten Paint: Header ausblenden, solange das Cover im Bild ist.
- * Beim ersten Besuch pro Sitzung zusätzlich das Löwen-Intro starten.
+ * Bei jedem Aufruf der Startseite zusätzlich das Löwen-Intro starten.
  */
-const coverScript = `(function(){var d=document.documentElement.dataset;d.coverActive="";try{if(!sessionStorage.getItem("frick-intro")){d.intro="";sessionStorage.setItem("frick-intro","1")}}catch(e){d.intro=""}})()`;
+const coverScript = `document.documentElement.dataset.coverActive="";document.documentElement.dataset.intro=""`;
 
 /**
  * Startscreen: nur der gestochene Löwe (Standardlogo), folgt dem Farbschema.

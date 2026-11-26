@@ -4,20 +4,22 @@
  * ─── HIER ERSETZEN ───────────────────────────────────────────────────────
  * Platzhalter: Schriftzug „Aaron Frick“, gesetzt aus „EMS Allure“
  * (Einstrich-Schreibschrift, SIL Open Font License), Kurven geglättet.
- * Die Strichstärke (Breitfeder: Haar- und Schattenstriche) entsteht in
+ * Die Strichstärke (Spitzfeder: Haar- und Schattenstriche) entsteht in
  * components/SignatureOutro.tsx – hier nur die Mittellinien.
  *
  * Für die echte Unterschrift: als SVG aus Figma/Illustrator exportieren –
- * nur Konturen (stroke), keine Flächen (fill). Dann hier eintragen:
+ * nur Mittellinien (stroke), keine Flächen (fill). Dann hier eintragen:
  *   - viewBox: Breite/Höhe des exportierten SVG (ideal ca. 480 breit, damit
- *     stroke-width 3.4 wie gewünscht wirkt)
+ *     die Federwerte in SignatureOutro.tsx passen)
  *   - paths: jeder Strich ein eigener, durchgehender Pfad (nur EIN "M"),
  *     sortiert in der Reihenfolge, in der du schreibst (i-Punkte und
  *     Querstriche dort, wo du sie setzt).
  * ─────────────────────────────────────────────────────────────────────────
  */
 export const signature = {
-  viewBox: "0 0 480 93",
+  viewBox: "0 0 480 104",
+  /** Unterstrich-Schwung, wird als letzter Zug gezogen */
+  swash: "M60 93 C160 99 300 96 410 89 C432 87.5 448 85.5 462 83",
   paths: [
     // A – Hauptzug
     "M6.00 68.89 C6.28 69.63 6.87 72.04 7.70 73.33 C8.53 74.62 9.71 75.80 11.00 76.64 C12.30 77.47 13.93 78.03 15.48 78.36 C17.02 78.68 18.68 78.72 20.28 78.61 C21.88 78.50 23.50 78.14 25.07 77.70 C26.63 77.27 28.20 76.68 29.69 75.99 C31.17 75.30 32.59 74.47 33.97 73.57 C35.35 72.68 36.65 71.66 37.95 70.64 C39.24 69.62 40.48 68.55 41.72 67.46 C42.96 66.38 44.18 65.27 45.39 64.13 C46.60 62.98 47.80 61.80 48.96 60.61 C50.13 59.43 51.25 58.22 52.38 57.01 C53.51 55.80 54.63 54.58 55.75 53.34 C56.87 52.10 58.00 50.85 59.11 49.59 C60.23 48.32 61.36 47.02 62.46 45.74 C63.55 44.47 64.64 43.20 65.69 41.91 C66.74 40.62 67.78 39.34 68.77 38.02 C69.77 36.71 70.69 35.37 71.65 34.04 C72.60 32.72 73.53 31.38 74.50 30.07 C75.48 28.77 76.48 27.48 77.50 26.21 C78.51 24.93 79.54 23.67 80.58 22.42 C81.62 21.17 82.68 19.95 83.75 18.72 C84.82 17.49 85.92 16.28 87.00 15.07 C88.09 13.85 89.22 12.49 90.26 11.42 C91.29 10.36 92.71 8.92 93.20 8.69 C93.68 8.46 93.61 9.13 93.18 10.03 C92.76 10.93 91.47 12.71 90.63 14.10 C89.78 15.50 88.90 16.92 88.14 18.39 C87.37 19.86 86.70 21.38 86.05 22.92 C85.41 24.46 84.84 26.04 84.26 27.64 C83.68 29.23 83.13 30.86 82.59 32.47 C82.05 34.07 81.53 35.66 81.01 37.25 C80.50 38.83 79.99 40.40 79.49 41.98 C78.99 43.55 78.49 45.12 78.03 46.70 C77.57 48.28 77.10 49.85 76.71 51.44 C76.33 53.02 75.93 54.61 75.71 56.21 C75.50 57.82 75.35 59.45 75.40 61.05 C75.45 62.65 75.61 64.31 76.01 65.83 C76.41 67.35 76.91 69.15 77.82 70.16 C78.72 71.17 80.11 71.87 81.45 71.91 C82.79 71.96 84.44 71.11 85.85 70.42 C87.27 69.73 88.65 68.74 89.94 67.77 C91.24 66.80 92.46 65.73 93.65 64.61 C94.83 63.50 95.97 62.28 97.05 61.10 C98.13 59.91 99.42 58.33 100.11 57.50 C100.79 56.68 100.98 56.38 101.15 56.16",

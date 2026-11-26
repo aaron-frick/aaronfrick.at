@@ -3,7 +3,7 @@ import loeweHell from "@/public/brand/loewe-hell.png";
 import loeweNavy from "@/public/brand/loewe-navy.png";
 
 /**
- * Der gestochene Löwe im Startscreen. Beim ersten Besuch wird er wie ein
+ * Der gestochene Löwe im Startscreen. Beim Aufruf der Seite wird er wie ein
  * Kupferstich von unten nach oben „aufgedruckt“ (siehe .lion-intro).
  */
 export function CoverLion() {
