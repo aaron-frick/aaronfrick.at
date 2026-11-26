@@ -30,10 +30,10 @@ export function CoverLion() {
         sizes="(min-width: 640px) 520px, 75vw"
         className="h-[62svh] w-auto max-w-[80vw] object-contain dark:hidden"
       />
+      {/* Dunkle Variante nur bei Bedarf laden (versteckte Bilder lädt der Browser nicht) */}
       <Image
         src={loeweHell}
         alt=""
-        priority
         sizes="(min-width: 640px) 520px, 75vw"
         className="hidden h-[62svh] w-auto max-w-[80vw] object-contain dark:block"
       />
