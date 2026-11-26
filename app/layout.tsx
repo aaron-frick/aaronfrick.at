@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { Motion } from "@/components/Motion";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { site } from "@/lib/site";
 import "./globals.css";
@@ -60,10 +61,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             Zum Inhalt springen
           </a>
           <Header />
-          <main id="inhalt" className="flex-1" tabIndex={-1}>
+          <main id="inhalt" className="flex-1 pt-17" tabIndex={-1}>
             {children}
           </main>
           <Footer />
+          <Motion />
         </ThemeProvider>
       </body>
     </html>

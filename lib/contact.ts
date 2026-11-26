@@ -1,20 +1,12 @@
 import { z } from "zod";
 
-export const contactTopics = [
-  "Beratung",
-  "Projektbegleitung",
-  "Organisation",
-  "Etwas anderes",
-] as const;
-
 export const contactSchema = z.object({
-  topic: z.enum(contactTopics, { error: "Bitte wählen Sie ein Thema." }),
   name: z
     .string()
     .trim()
-    .min(2, { error: "Bitte geben Sie Ihren Namen an." })
+    .min(2, { error: "Bitte Namen angeben." })
     .max(120, { error: "Der Name ist zu lang." }),
-  email: z.email({ error: "Bitte geben Sie eine gültige E-Mail-Adresse an." }).max(200),
+  email: z.email({ error: "Bitte gültige E-Mail angeben." }).max(200),
   message: z
     .string()
     .trim()

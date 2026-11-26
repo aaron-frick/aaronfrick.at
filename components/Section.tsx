@@ -18,7 +18,7 @@ export function Section({ id, label, title, children, tone = "default" }: Sectio
       className={tone === "navy" ? "dark border-y border-line bg-bg text-fg" : undefined}
     >
       <div className="mx-auto grid max-w-page gap-10 px-gutter py-24 sm:py-32 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-3">
+        <div data-reveal className="lg:col-span-3">
           <h2 id={`${id}-label`} className="label text-accent">
             {label}
           </h2>

@@ -160,46 +160,58 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* Intro (erster Besuch pro Sitzung) und Hero-Einstieg                 */
+/* Weiches Scrollen (Lenis)                                            */
 /* ------------------------------------------------------------------ */
 
-:root {
-  /* Hero startet, wenn das Intro die Fläche freigibt */
-  --intro-delay: 2.05s;
+html.lenis,
+html.lenis body {
+  height: auto;
 }
-:root[data-intro="skip"] {
-  --intro-delay: 0.05s;
+html.lenis {
+  scroll-behavior: auto;
 }
-
-.intro {
-  animation: intro-out 0.75s cubic-bezier(0.76, 0, 0.24, 1) 1.55s both;
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
 }
-.intro-bar {
-  animation: intro-bar 1.4s var(--ease-calm) 0.1s both;
-}
-.intro-lion {
-  animation: intro-lion 1.1s var(--ease-calm) 0.15s both;
-}
-.intro-word {
-  animation: rise 0.7s var(--ease-calm) 0.75s both;
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
 
-:root[data-intro="skip"] .intro {
-  display: none;
+/* ------------------------------------------------------------------ */
+/* Header: fährt erst herein, wenn das Cover weggescrollt ist           */
+/* ------------------------------------------------------------------ */
+
+.site-header {
+  transition: transform 0.7s var(--ease-calm);
 }
-@media (prefers-reduced-motion: reduce) {
-  .intro {
-    display: none;
-  }
+:root[data-cover-active] .site-header {
+  transform: translateY(-105%);
 }
 
-@keyframes intro-out {
-  to {
-    transform: translateY(-100%);
-    visibility: hidden;
-  }
+/* ------------------------------------------------------------------ */
+/* Cover: sanftes Einblenden, bleibt stehen, gleitet beim Scrollen weg */
+/* ------------------------------------------------------------------ */
+
+.cover-bar {
+  animation: cover-bar 1.8s var(--ease-calm) 0.2s both;
 }
-@keyframes intro-bar {
+.cover-lion {
+  animation: cover-in 1.8s var(--ease-calm) 0.15s both;
+}
+.cover-word {
+  animation: cover-in-up 1.4s var(--ease-calm) 0.7s both;
+}
+.cover-hint {
+  animation: cover-fade 1.2s var(--ease-calm) 1.5s both;
+}
+.cover-inner {
+  /* --p: Scroll-Fortschritt 0–1 (components/Motion.tsx) */
+  transform: translate3d(0, calc(var(--p, 0) * 32svh), 0) scale(calc(1 - var(--p, 0) * 0.08));
+  opacity: calc(1 - var(--p, 0) * 1.3);
+  will-change: transform, opacity;
+}
+
+@keyframes cover-bar {
   from {
     transform: scaleX(0);
   }
@@ -207,48 +219,100 @@
     transform: scaleX(1);
   }
 }
-@keyframes intro-lion {
+/* Startwerte bewusst > 0: Chrome wertet Elemente mit Deckkraft 0 nicht als LCP. */
+@keyframes cover-in {
   from {
-    clip-path: inset(100% 0 0 0);
-    transform: translateY(1.5rem);
+    opacity: 0.12;
+    transform: scale(0.96);
+    filter: blur(8px);
   }
   to {
-    clip-path: inset(0 0 0 0);
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+@keyframes cover-in-up {
+  from {
+    opacity: 0.12;
+    transform: translateY(1rem);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+@keyframes cover-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cover-inner {
     transform: none;
   }
 }
 
-/* rise-120 = aufsteigen, 120 ms nach Ende des Intros */
-@utility rise-* {
-  animation: rise 0.9s var(--ease-calm) both;
-  animation-delay: calc(var(--intro-delay) + --value(integer) * 1ms);
+/* ------------------------------------------------------------------ */
+/* Flow: Inhalte blenden beim Hineinscrollen ein                       */
+/* ------------------------------------------------------------------ */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 2rem, 0);
+  transition:
+    opacity 1.1s var(--ease-calm),
+    transform 1.1s var(--ease-calm);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+[data-reveal][data-shown] {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce), (scripting: none) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 /* ------------------------------------------------------------------ */
-/* Outro: Unterschrift schreibt sich, danach „Frick.“                  */
+/* Outro: Unterschrift schreibt sich, dann „Frick.“, dann Kontakt      */
 /* ------------------------------------------------------------------ */
 
 .outro-signature {
   clip-path: inset(0 100% 0 0);
   transition: clip-path 2.2s cubic-bezier(0.65, 0, 0.35, 1);
 }
-.outro-word {
+.outro-word,
+.outro-after {
   opacity: 0;
   transform: translateY(0.75rem);
   transition:
-    opacity 0.9s var(--ease-calm) 1.9s,
-    transform 0.9s var(--ease-calm) 1.9s;
+    opacity 0.9s var(--ease-calm) 1.8s,
+    transform 0.9s var(--ease-calm) 1.8s;
+}
+.outro-after {
+  transition-delay: 2.3s;
 }
 .outro[data-shown] .outro-signature {
   clip-path: inset(0 0 0 0);
 }
-.outro[data-shown] .outro-word {
+.outro[data-shown] .outro-word,
+.outro[data-shown] .outro-after {
   opacity: 1;
   transform: none;
 }
 @media (prefers-reduced-motion: reduce), (scripting: none) {
   .outro-signature,
-  .outro-word {
+  .outro-word,
+  .outro-after {
     clip-path: none;
     opacity: 1;
     transform: none;
