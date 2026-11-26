@@ -309,6 +309,9 @@
 /* Pfade werden per JS geschrieben; Logo + Name erscheinen bei p > 0.78*/
 /* ------------------------------------------------------------------ */
 
+.signature-outro[data-inked] .signature-fallback {
+  display: none;
+}
 .signature-outro[data-ready] .signature-mark {
   opacity: 0;
   transform: translateY(8px);
