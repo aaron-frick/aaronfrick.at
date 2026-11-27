@@ -51,7 +51,14 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="de-AT" className={inter.variable} suppressHydrationWarning>
+    // data-scroll-behavior: Next.js schaltet das sanfte Scrollen (globals.css)
+    // bei Seitenwechseln ab, damit Sprungziele exakt getroffen werden.
+    <html
+      lang="de-AT"
+      className={inter.variable}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <body className="flex min-h-dvh flex-col">
         <ThemeProvider>
           <a
